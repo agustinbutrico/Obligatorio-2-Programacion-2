@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\agust\\Downloads\\Obligatorio-Programacion-2-main\\Proyecto\\LogicaNegocio\\LogicaNegocio.csproj": {}
+    "C:\\Users\\agust\\Source\\Repos\\Obligatorio-2-Programacion-2\\Proyecto\\LogicaNegocio\\LogicaNegocio.csproj": {}
   },
   "projects": {
-    "C:\\Users\\agust\\Downloads\\Obligatorio-Programacion-2-main\\Proyecto\\LogicaNegocio\\LogicaNegocio.csproj": {
+    "C:\\Users\\agust\\Source\\Repos\\Obligatorio-2-Programacion-2\\Proyecto\\LogicaNegocio\\LogicaNegocio.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\agust\\Downloads\\Obligatorio-Programacion-2-main\\Proyecto\\LogicaNegocio\\LogicaNegocio.csproj",
+        "projectUniqueName": "C:\\Users\\agust\\Source\\Repos\\Obligatorio-2-Programacion-2\\Proyecto\\LogicaNegocio\\LogicaNegocio.csproj",
         "projectName": "LogicaNegocio",
-        "projectPath": "C:\\Users\\agust\\Downloads\\Obligatorio-Programacion-2-main\\Proyecto\\LogicaNegocio\\LogicaNegocio.csproj",
+        "projectPath": "C:\\Users\\agust\\Source\\Repos\\Obligatorio-2-Programacion-2\\Proyecto\\LogicaNegocio\\LogicaNegocio.csproj",
         "packagesPath": "C:\\Users\\agust\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\agust\\Downloads\\Obligatorio-Programacion-2-main\\Proyecto\\LogicaNegocio\\obj\\",
+        "outputPath": "C:\\Users\\agust\\Source\\Repos\\Obligatorio-2-Programacion-2\\Proyecto\\LogicaNegocio\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\agust\\AppData\\Roaming\\NuGet\\NuGet.Config",
