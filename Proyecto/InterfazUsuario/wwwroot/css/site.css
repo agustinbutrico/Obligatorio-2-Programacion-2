@@ -37,8 +37,18 @@ input[type="submit"] {
     justify-self: start; /* Align the button to the left within the column */
 }
 
+.wide {
+  width: 400px;
+}
+
+.wider {
+  width: 700px;
+}
+
+.widest {
+  width: 1000px;
+}
+
 .account {
     margin: 11% auto;
-    width: 400px;
-    height: auto;
 }
