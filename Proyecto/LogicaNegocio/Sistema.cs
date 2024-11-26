@@ -809,7 +809,7 @@ namespace LogicaNegocio
             }
             else
             {
-                throw new ArgumentException("Ya existe un usuario registrado con el nombre y apellido proporcionados");
+                throw new ArgumentException("Ya existe un usuario registrado con el nombre, apellido e email proporcionados");
             }
         }
         public void AltaCliente(string nombre, string apellido, string email, string contrasenia, decimal saldo)
@@ -824,7 +824,7 @@ namespace LogicaNegocio
             }
             else
             {
-                throw new ArgumentException("Ya existe un usuario registrado con el nombre y apellido proporcionados");
+                throw new ArgumentException("Ya existe un usuario registrado con el nombre, apellido e email proporcionados");
             }
         }
         public void AltaAdministrador(string nombre, string apellido, string email, string contrasenia)
@@ -839,7 +839,7 @@ namespace LogicaNegocio
             }
             else
             {
-                throw new ArgumentException("Ya existe un usuario registrado con el nombre y apellido proporcionados");
+                throw new ArgumentException("Ya existe un usuario registrado con el nombre, apellido e email proporcionados");
             }
         }
         #endregion
