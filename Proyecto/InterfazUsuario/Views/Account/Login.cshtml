@@ -1,19 +1,23 @@
-﻿
 @{
     ViewData["Title"] = "Login";
 }
 
-<div class="account">
+<div class="wide account">
     <h1>Login</h1>
 
-    <div class="spaced form-container">
+    <div class="spaced frame form-container">
         <form method="post">
             <label>Email</label>
             <input type="text" name="email" />
             <label>Contraseña</label>
             <input type="text" name="contrasenia" />
-            <input type="submit" />
+            <input type="submit" value="Ingresar" class="btn btn-primary"/>
         </form>
+    </div>
+    <div class="frame action-container">
+        <p>¿Todavia no estás registrado?</p>
+        <!-- Botón con redirección a la página de registro -->
+        <a href="/Account/Register" class="btn btn-outline-secondary">Registrarse</a>
     </div>
 
     @if (ViewBag.Mensaje != null)

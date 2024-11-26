@@ -1,12 +1,11 @@
-﻿
 @{
     ViewData["Title"] = "Register";
 }
 
-<div class="account">
+<div class="wide account">
     <h1>Registro</h1>
 
-    <div class="spaced form-container">
+    <div class="spaced frame form-container">
         <form method="post">
             <label>Nombre</label>
             <input type="text" name="nombre" />
@@ -16,8 +15,13 @@
             <input type="text" name="email" />
             <label>Contraseña</label>
             <input type="text" name="contrasenia" />
-            <input type="submit" />
+            <input type="submit" value="Registrarse" class="btn btn-primary" />
         </form>
+    </div>
+    <div class="frame action-container">
+        <p>¿Ya estás registrado?</p>
+        <!-- Botón con redirección a la página de login -->
+        <a href="/Account/Login" class="btn btn-outline-secondary">Iniciar sesion</a>
     </div>
 
     @if (ViewBag.Mensaje != null)

@@ -2,7 +2,20 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Muestra el contenido si el usuario está loggeado -->
+@if (ViewContext.HttpContext.Session.GetString("UserRole") != null)
+{
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-4">Acceso restringido</h1>
+        <label>Ir a login</label>
+        <!-- Botón con redirección a la página de login -->
+        <a href="/Account/Login" class="btn btn-primary">Login</a>
+    </div>
+}

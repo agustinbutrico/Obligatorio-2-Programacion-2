@@ -34,11 +34,33 @@ body {
 
 input[type="submit"] {
     grid-column: 2; /* Place the submit button in the second column */
-    justify-self: start; /* Align the button to the left within the column */
+    justify-self: end; /* Align the button to the left within the column */
+}
+
+.wide {
+  width: 400px;
+}
+
+.wider {
+  width: 700px;
+}
+
+.widest {
+  width: 1000px;
 }
 
 .account {
-    margin: 11% auto;
-    width: 400px;
-    height: auto;
+    margin: 15% auto;
+}
+
+.frame {
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.action-container {
+    display: grid;
+    grid-template-columns: 1fr auto; 
+    align-items: center;
 }
