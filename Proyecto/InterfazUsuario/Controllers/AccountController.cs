@@ -5,6 +5,7 @@ namespace InterfazUsuario.Controllers
 {
     public class AccountController : Controller
     {
+        // Se llama a la instancia con patron singleton
         private Sistema sistema = Sistema.Instancia;
 
         [HttpGet]

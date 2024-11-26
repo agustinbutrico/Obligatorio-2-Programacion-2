@@ -2,13 +2,79 @@
     ViewData["Title"] = "Home Page";
 }
 
+<!-- Define el modelo a usar -->
+@model InterfazUsuario.Models.PublicacionesViewModel
+
 <!-- Muestra el contenido si el usuario está loggeado -->
 @if (ViewContext.HttpContext.Session.GetString("UserRole") != null)
 {
     <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+        <h1 class="display-4">Publicaciones</h1>
     </div>
+    @if (Model.Ventas != null && Model.Ventas.Any())
+    {
+        <div class="spaced">    
+            <h2>Ventas</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Articulos</th>
+                        <th>Fecha fin</th>
+                        <th>Oferta relampago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Ventas.Count; i++)
+                    {
+                        var venta = Model.Ventas[i];
+                        <tr>
+                            <td>@venta.Nombre</td>
+                            <td>@venta.Estado</td>
+                            <td>@venta.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td>@venta.Articulos.Count</td>
+                            <td>@venta.FechaFin.ToString("dd/MM/yyyy")</td>
+                            <td>@(venta.OfertaRelampago ? "Sí" : "No")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    @if (Model.Subastas != null && Model.Subastas.Any())
+    {
+        <div class="spaced">
+            <h2>Subastas</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Articulos</th>
+                        <th>Fecha fin</th>
+                        <th>Ofertas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Subastas.Count; i++)
+                    {
+                        var subasta = Model.Subastas[i];
+                        <tr>
+                            <td>@subasta.Nombre</td>
+                            <td>@subasta.Estado</td>
+                            <td>@subasta.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td>@subasta.Articulos.Count</td>
+                            <td>@subasta.FechaFin.ToString("dd/MM/yyyy")</td>
+                            <td>@subasta.Ofertas.Count</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 }
 else
 {
