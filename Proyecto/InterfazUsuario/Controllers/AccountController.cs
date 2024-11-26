@@ -40,10 +40,20 @@ namespace InterfazUsuario.Controllers
                 }
                 else
                 {
+                    Usuario? usuario = sistema.ObtenerUsuarioPorEmailYContrasenia(email, contrasenia, false, false);
                     // Comprobar si el usuario existe
-                    if (sistema.ObtenerUsuarioPorEmailYContrasenia(email, contrasenia, false, false) != null)
+                    if (usuario != null)
                     {
-                        return RedirectToAction("Index", "Home");
+                        if (usuario is Cliente)
+                        {
+                            HttpContext.Session.SetString("UserRole", "Cliente"); // Guardar el rol en la sesión
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            HttpContext.Session.SetString("UserRole", "Administrador"); // Guardar el rol en la sesión
+                            return RedirectToAction("IndexAdmin", "Home");
+                        }
                     }
                 }
             }

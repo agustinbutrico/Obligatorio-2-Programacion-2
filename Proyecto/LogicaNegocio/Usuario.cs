@@ -121,7 +121,7 @@ namespace LogicaNegocio
             if (obj != null && obj is Usuario)
             {
                 Usuario usuario = (Usuario)obj;
-                return Nombre == usuario.Nombre && Apellido == usuario.Apellido && Email == usuario.Email;
+                return Nombre == usuario.Nombre && Apellido == usuario.Apellido;
             }
             return false;
         }
