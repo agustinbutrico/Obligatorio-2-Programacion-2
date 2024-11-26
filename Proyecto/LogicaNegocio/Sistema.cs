@@ -695,15 +695,15 @@ namespace LogicaNegocio
             }
             if (!hayCliente && !hayAdministrador)
             {
-                throw new ArgumentException("No hay ningún usuario con el nombre proporcionado");
+                throw new ArgumentException("No hay ningún usuario con el email y contraseña proporcionados");
             }
             if (!hayCliente && esUnicamenteCliente)
             {
-                throw new ArgumentException("No hay ningún cliente con el nombre proporcionado");
+                throw new ArgumentException("No hay ningún cliente con el email y contraseña proporcionados");
             }
             if (!hayAdministrador && esUnicamenteAdministrador)
             {
-                throw new ArgumentException("No hay ningún administrador con el nombre proporcionado");
+                throw new ArgumentException("No hay ningún administrador con el email y contraseña proporcionados");
             }
             return usuario;
         }
@@ -995,11 +995,11 @@ namespace LogicaNegocio
             AltaAdministrador("Valentin", "Latorre", "ValentinLatorre@Gmail.com", "Valentin1234");
             AltaAdministrador("Agustin", "Butrico", "AgustinButrico@gmail.com", "Agustin1234");
             AltaCliente("Juan", "Peres", "Juanperes@hmail.com", "Juan1234", 2000);
-            AltaCliente("Esteban", "Lopez", "EstebanLopez@hmail.com", "556643", 2000);
+            AltaCliente("Esteban", "Lopez", "EstebanLopez@hmail.com", "5566AS43", 2000);
             AltaCliente("Carlos", "Medina", "CarlosMedina@hmail.com", "Medina1234", 4500);
             AltaCliente("Mariano", "Morales", "MarianoMorales@hmail.com", "Mariano2", 5000);
             AltaCliente("Estela", "Rosales", "EstelaRosales@hmail.com", "Rosalia46", 300);
-            AltaCliente("Marcos", "Sauce", "MarcosSauce@hmail.com", "Sauce31", 30000);
+            AltaCliente("Marcos", "Sauce", "MarcosSauce@hmail.com", "Sauce311", 30000);
             AltaCliente("Lucia", "Gomez", "LuciaGomezs@hmail.com", "Lucia1990", 7200);
             AltaCliente("Rodrigo", "Barrios", "RodrigoBarrios@hmail.com", "RodrigoBarrios12", 900);
             AltaCliente("Pepe", "Argento", "PepeArgento@gmail.com", "PepeArgento1113", 3300);

@@ -17,19 +17,34 @@ namespace InterfazUsuario.Controllers
         {
             try
             {
-                // Validar entrada de usuario de manera básica
-                if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(contrasenia) && contrasenia.Length >= 8)
+                // Manejo de errores
+                if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(contrasenia))
                 {
-                    // Comprobar si el usuario no existe
+                    ViewBag.Mensaje = "No pueden haber campos vacios";
+                }
+                else if (email.IndexOf('@') == -1)
+                {
+                    ViewBag.Mensaje = "Debe incluir el dominio del email";
+                }
+                else if (contrasenia.Length < 8)
+                {
+                    ViewBag.Mensaje = "La contrasenia debe ser de al menos 8 digitos";
+                }
+                else if (!contrasenia.Any(char.IsLetter))
+                {
+                    ViewBag.Mensaje = "La contrasenia debe tener al menos una letra";
+                }
+                else if (!contrasenia.Any(char.IsDigit))
+                {
+                    ViewBag.Mensaje = "La contrasenia debe tener al menos un dígito";
+                }
+                else
+                {
+                    // Comprobar si el usuario existe
                     if (sistema.ObtenerUsuarioPorEmailYContrasenia(email, contrasenia, false, false) != null)
                     {
                         return RedirectToAction("Index", "Home");
                     }
-                }
-                else
-                {
-                    // Agregar mensaje si la validación falla
-                    ViewBag.Mensaje = "Por favor, ingresa un email y una contraseña válidos.";
                 }
             }
             catch (InvalidOperationException ex)
@@ -42,7 +57,7 @@ namespace InterfazUsuario.Controllers
             }
             catch (ArgumentException ex)
             {
-                ViewBag.Mensaje = $"Argumento inválido: {ex.Message}";
+                ViewBag.Mensaje = $"{ex.Message}";
             }
             catch (Exception ex)
             {

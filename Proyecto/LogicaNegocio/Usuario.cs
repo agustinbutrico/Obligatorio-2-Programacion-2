@@ -93,6 +93,18 @@ namespace LogicaNegocio
             {
                 throw new ArgumentException("El contrasenia no puede ser vacío");
             }
+            if (contrasenia.Length < 8)
+            {
+                throw new ArgumentException("La contraseña debe tener al menos 8 caracteres");
+            }
+            if (!contrasenia.Any(char.IsLetter))
+            {
+                throw new ArgumentException("La contraseña debe incluir al menos una letra");
+            }
+            if (!contrasenia.Any(char.IsDigit))
+            {
+                throw new ArgumentException("La contraseña debe incluir al menos un número");
+            }
             return contrasenia;
         }
 
