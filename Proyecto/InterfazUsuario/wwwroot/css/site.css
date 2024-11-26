@@ -20,3 +20,25 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.spaced {
+    margin: 16px auto 16px;
+}
+
+.form-container form {
+    display: grid;
+    grid-template-columns: auto 1fr; /* Labels take remaining space, inputs are fixed */
+    gap: 15px; /* Space between items */
+    align-items: center; /* Vertically center-align labels and inputs */
+}
+
+input[type="submit"] {
+    grid-column: 2; /* Place the submit button in the second column */
+    justify-self: start; /* Align the button to the left within the column */
+}
+
+.account {
+    margin: 11% auto;
+    width: 400px;
+    height: auto;
+}

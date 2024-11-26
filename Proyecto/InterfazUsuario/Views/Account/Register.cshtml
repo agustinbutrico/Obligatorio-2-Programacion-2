@@ -3,20 +3,27 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>Register</h1>
+<div class="account">
+    <h1>Registro</h1>
 
-<form method="post">
-    <label>Nombre</label>
-    <input type="text" name="nombre" />
-    <br />
-    <label>Apellido</label>
-    <input type="text" name="apellido" />
-    <br />
-    <label>Email</label>
-    <input type="text" name="email" />
-    <br />
-    <label>Contraseña</label>
-    <input type="text" name="contrasenia" />
-    <br />
-    <input type="submit" />
-</form>
+    <div class="spaced form-container">
+        <form method="post">
+            <label>Nombre</label>
+            <input type="text" name="nombre" />
+            <label>Apellido</label>
+            <input type="text" name="apellido" />
+            <label>Email</label>
+            <input type="text" name="email" />
+            <label>Contraseña</label>
+            <input type="text" name="contrasenia" />
+            <input type="submit" />
+        </form>
+    </div>
+
+    @if (ViewBag.Mensaje != null)
+    {
+        <div class="spaced alert alert-danger">
+            @ViewBag.Mensaje
+        </div>
+    }
+</div>

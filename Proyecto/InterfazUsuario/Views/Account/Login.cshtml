@@ -3,23 +3,23 @@
     ViewData["Title"] = "Login";
 }
 
-<h1>Login</h1>
+<div class="account">
+    <h1>Login</h1>
 
-<div>
-    <form method="post">
-        <label>Email</label>
-        <input type="text" name="email" />
-        <br />
-        <label>Contraseña</label>
-        <input type="text" name="contrasenia" />
-        <br />
-        <input type="submit" />
-    </form>
-</div>
-
-@if (ViewBag.Mensaje != null)
-{
-    <div class="alert alert-danger">
-        @ViewBag.Mensaje
+    <div class="spaced form-container">
+        <form method="post">
+            <label>Email</label>
+            <input type="text" name="email" />
+            <label>Contraseña</label>
+            <input type="text" name="contrasenia" />
+            <input type="submit" />
+        </form>
     </div>
-}
+
+    @if (ViewBag.Mensaje != null)
+    {
+        <div class="spaced alert alert-danger">
+            @ViewBag.Mensaje
+        </div>
+    }
+</div>
