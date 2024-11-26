@@ -113,7 +113,7 @@ namespace InterfazUsuario.Controllers
                 else
                 {
                     // Crea el nuevo cliente si es que no existe previamente
-                    sistema.AltaCliente(nombre, apellido, email, contrasenia, 2000);
+                    sistema.AltaCliente(nombre, apellido, email, contrasenia, 0);
                     ViewBag.Confirmacion = "El usuario fue registrado correctamente";
                     // return RedirectToAction("Account", "Login");
                 }
