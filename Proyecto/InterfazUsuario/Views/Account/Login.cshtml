@@ -5,12 +5,21 @@
 
 <h1>Login</h1>
 
-<form method="post">
-    <label>Email</label>
-    <input type="text" name="email" />
-    <br />
-    <label>Contraseña</label>
-    <input type="text" name="contrasenia" />
-    <br />
-    <input type="submit" />
-</form>
+<div>
+    <form method="post">
+        <label>Email</label>
+        <input type="text" name="email" />
+        <br />
+        <label>Contraseña</label>
+        <input type="text" name="contrasenia" />
+        <br />
+        <input type="submit" />
+    </form>
+</div>
+
+@if (ViewBag.Mensaje != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.Mensaje
+    </div>
+}

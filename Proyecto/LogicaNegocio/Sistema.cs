@@ -12,6 +12,31 @@ namespace LogicaNegocio
 {
     public class Sistema
     {
+        #region Patron singleton
+        private static Sistema _instancia; // Instancia única
+        private static readonly object _bloqueo = new object(); // Para hilos seguros
+
+        // Propiedad para acceder a la instancia única
+        public static Sistema Instancia
+        {
+            get
+            {
+                // Double-check locking para garantizar seguridad en multithreading
+                if (_instancia == null)
+                {
+                    lock (_bloqueo)
+                    {
+                        if (_instancia == null)
+                        {
+                            _instancia = new Sistema();
+                        }
+                    }
+                }
+                return _instancia;
+            }
+        }
+        #endregion
+
         #region Constructor
         // Atributos de la clase con propiedades automaticas (shortHand)
         private List<Usuario> _usuarios {  get; set; }
@@ -19,7 +44,7 @@ namespace LogicaNegocio
         private List<Articulo> _articulos { get; set; }
 
         // Ejecucion principal
-        public Sistema()
+        private Sistema()
         {
             _usuarios = new List<Usuario>();
             _publicaciones = new List<Publicacion>();
@@ -605,6 +630,49 @@ namespace LogicaNegocio
             while (indice < _usuarios.Count && !hayCliente && !hayAdministrador)
             {
                 if (nombre.Contains(_usuarios[indice].Nombre)) // Si la lista de nombres contiene algún usuario
+                {
+                    if ((esUnicamenteCliente && !esUnicamenteAdministrador) || (!esUnicamenteCliente && !esUnicamenteAdministrador))
+                    {
+                        if (_usuarios[indice] is Cliente cliente)
+                        {
+                            hayCliente = true;
+                            usuario = cliente; // Se asigna el usuario
+                        }
+                    }
+                    if ((esUnicamenteAdministrador && !esUnicamenteCliente) || (!esUnicamenteCliente && !esUnicamenteAdministrador))
+                    {
+                        if (_usuarios[indice] is Administrador administrador)
+                        {
+                            hayAdministrador = true;
+                            usuario = administrador; // Se asigna el usuario
+                        }
+                    }
+                }
+                indice++;
+            }
+            if (!hayCliente && !hayAdministrador)
+            {
+                throw new ArgumentException("No hay ningún usuario con el nombre proporcionado");
+            }
+            if (!hayCliente && esUnicamenteCliente)
+            {
+                throw new ArgumentException("No hay ningún cliente con el nombre proporcionado");
+            }
+            if (!hayAdministrador && esUnicamenteAdministrador)
+            {
+                throw new ArgumentException("No hay ningún administrador con el nombre proporcionado");
+            }
+            return usuario;
+        }
+        public Usuario? ObtenerUsuarioPorEmailYContrasenia(string email, string contrasenia, bool esUnicamenteCliente, bool esUnicamenteAdministrador)
+        {
+            bool hayCliente = false;
+            bool hayAdministrador = false;
+            Usuario? usuario = null;
+            int indice = 0;
+            while (indice < _usuarios.Count && !hayCliente && !hayAdministrador)
+            {
+                if (email.Contains(_usuarios[indice].Email) && contrasenia.Contains(_usuarios[indice].Contrasenia)) // Si la lista de email y contraseñas contiene algún usuario
                 {
                     if ((esUnicamenteCliente && !esUnicamenteAdministrador) || (!esUnicamenteCliente && !esUnicamenteAdministrador))
                     {
