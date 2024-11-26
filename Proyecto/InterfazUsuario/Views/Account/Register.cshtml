@@ -26,4 +26,11 @@
             @ViewBag.Mensaje
         </div>
     }
+
+    @if (ViewBag.Confirmacion != null)
+    {
+        <div class="spaced alert alert-info">
+            @ViewBag.Confirmacion
+        </div>
+    }
 </div>
