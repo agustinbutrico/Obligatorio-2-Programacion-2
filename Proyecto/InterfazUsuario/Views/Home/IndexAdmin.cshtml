@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+
 @if (ViewContext.HttpContext.Session.GetString("UserRole") == "Administrador")
 {
     <div class="text-center">
