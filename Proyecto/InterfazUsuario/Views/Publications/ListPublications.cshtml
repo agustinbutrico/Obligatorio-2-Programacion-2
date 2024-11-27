@@ -1,18 +1,22 @@
 ﻿
 @{
-    ViewData["Title"] = "Publications";
+    ViewData["Title"] = "ListPublications";
 }
 
-
 <!-- Define el modelo a usar -->
-@model InterfazUsuario.Models.PublicacionesViewModel
+@model InterfazUsuario.Models.PublicationsViewModel
+
+@{
+    string? currentRole = ViewContext.HttpContext.Session.GetString("UserRole");
+}
 
 <!-- Muestra el contenido si el usuario está loggeado -->
-@if (ViewContext.HttpContext.Session.GetString("UserRole") != null)
+@if (currentRole != null)
 {
     <div class="text-center">
         <h1 class="display-4">Publicaciones</h1>
     </div>
+
     @if (Model.Ventas != null && Model.Ventas.Any())
     {
         <div class="spaced">
@@ -20,6 +24,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th>Id</th>
                         <th>Nombre</th>
                         <th>Estado</th>
                         <th>Fecha</th>
@@ -27,6 +32,7 @@
                         <th>Fecha fin</th>
                         <th>Oferta relampago</th>
                         <th>Precio</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,19 +50,32 @@
                             precio += precioTemp;
                         }
                         <tr>
+                            <td>@venta.Id</td>
                             <td>@venta.Nombre</td>
                             <td>@venta.Estado</td>
                             <td>@venta.Fecha.ToString("dd/MM/yyyy")</td>
                             <td>@venta.Articulos.Count</td>
-                            <td>@venta.FechaFin.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (venta.Estado.ToUpper() == "ABIERTA")
+                                {
+                                    venta.FechaFin.ToString("dd/MM/yyyy");
+                                }
+                            </td>
                             <td>@(venta.OfertaRelampago ? "Sí" : "No")</td>
                             <td>$@precio</td>
+                            <td>
+                                @if (venta.Estado.ToUpper() == "ABIERTA")
+                                {
+                                    <a href="/Publications/Buy/@venta.Id" class="btn btn-primary">Comprar</a>
+                                }
+                            </td>
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
     }
+
     @if (Model.Subastas != null && Model.Subastas.Any())
     {
         <div class="spaced">
@@ -64,6 +83,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th>Id</th>
                         <th>Nombre</th>
                         <th>Estado</th>
                         <th>Fecha</th>
@@ -71,7 +91,7 @@
                         <th>Fecha fin</th>
                         <th>Ofertas</th>
                         <th>Precio</th>
-                        <th>Ofertar</th>
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,14 +108,25 @@
                             }
                         }
                         <tr>
+                            <td>@subasta.Id</td>
                             <td>@subasta.Nombre</td>
                             <td>@subasta.Estado</td>
                             <td>@subasta.Fecha.ToString("dd/MM/yyyy")</td>
                             <td>@subasta.Articulos.Count</td>
-                            <td>@subasta.FechaFin.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (subasta.Estado.ToUpper() == "ABIERTA")
+                                {
+                                    subasta.FechaFin.ToString("dd/MM/yyyy");
+                                }
+                            </td>
                             <td>@subasta.Ofertas.Count</td>
                             <td>$@precio</td>
-                            <td><a href="/Publications/Offers" class="btn btn-primary">Login</a></td>
+                            <td>
+                                @if (subasta.Estado.ToUpper() == "ABIERTA")
+                                {
+                                    <a href="/Publications/ListOffers/@subasta.Id" class="btn btn-primary">Detalles</a>
+                                }
+                            </td>
                         </tr>
                     }
                 </tbody>

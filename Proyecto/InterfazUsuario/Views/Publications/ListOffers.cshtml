@@ -1,0 +1,112 @@
+﻿
+@{
+    ViewData["Title"] = "ListOffers";
+}
+
+<!-- Define el modelo a usar -->
+@model InterfazUsuario.Models.OffertViewModel
+
+@{
+    string? currentRole = ViewContext.HttpContext.Session.GetString("UserRole");
+}
+
+<!-- Muestra el contenido si el usuario está loggeado -->
+@if (currentRole != null)
+{
+    <div class="text-center">
+        <h1 class="display-4">Ofertas</h1>
+    </div>
+
+    @if (Model.Subasta != null)
+    {
+        <div class="spaced">
+            <h2>Subasta</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Articulos</th>
+                        <th>Fecha fin</th>
+                        <th>Ofertas</th>
+                        <th>Precio</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var subasta = Model.Subasta;
+                        decimal precio = 0;
+                        for (int i = 0; i < subasta.Ofertas.Count; i++)
+                        {
+                            decimal precioTemp = subasta.Ofertas[i].Monto;
+                            if (precioTemp > precio)
+                            {
+                                precio = precioTemp;
+                            }
+                        }
+                        <tr>
+                            <td>@subasta.Id</td>
+                            <td>@subasta.Nombre</td>
+                            <td>@subasta.Estado</td>
+                            <td>@subasta.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td>@subasta.Articulos.Count</td>
+                            <td>
+                                @if (subasta.Estado.ToUpper() == "ABIERTA")
+                                {
+                                    subasta.FechaFin.ToString("dd/MM/yyyy");
+                                }
+                            </td>
+                            <td>@subasta.Ofertas.Count</td>
+                            <td>$@precio</td>
+                            <td>@{
+                                    <a href="/Publications/Offert/@subasta.Id" class="btn btn-primary">Ofertar</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    @if (Model.Subasta != null)
+    {
+        <div class="spaced">
+            <h2>Historico</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Fecha</th>
+                        <th>Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var subasta = Model.Subasta;
+                        for (int i = 0; i < subasta.Ofertas.Count; i++)
+                        {
+                            <tr>
+                                <td>@subasta.Ofertas[i].Usuario</td>
+                                <td>@subasta.Ofertas[i].Fecha.ToString("dd/MM/yyyy")</td>
+                                <td>$@subasta.Ofertas[i].Monto</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-4">Acceso restringido</h1>
+        <label>Ir a login</label>
+        <!-- Botón con redirección a la página de login -->
+        <a href="/Account/Login" class="btn btn-primary">Login</a>
+    </div>
+}

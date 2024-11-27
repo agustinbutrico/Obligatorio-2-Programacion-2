@@ -48,12 +48,14 @@ namespace InterfazUsuario.Controllers
                         if (usuario is Cliente)
                         {
                             HttpContext.Session.SetString("UserRole", "Cliente"); // Guardar el rol en la sesión
-                            return RedirectToAction("Publications", "Publications");
+                            HttpContext.Session.SetInt32("UserId", usuario.Id);  // Almacenar el Id del usuario
+                            return RedirectToAction("ListPublications", "Publications");
                         }
                         else
                         {
                             HttpContext.Session.SetString("UserRole", "Administrador"); // Guardar el rol en la sesión
-                            return RedirectToAction("Publications", "Publications");
+                            HttpContext.Session.SetInt32("UserId", usuario.Id);  // Almacenar el Id del usuario
+                            return RedirectToAction("ListPublications", "Publications");
                         }
                     }
                 }
