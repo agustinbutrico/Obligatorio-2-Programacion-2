@@ -1,4 +1,5 @@
 using InterfazUsuario.Models;
+using LogicaNegocio;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 

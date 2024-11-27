@@ -2,11 +2,15 @@
     ViewData["Title"] = "Home Page";
 }
 
+@{
+    string? currentRole = ViewContext.HttpContext.Session.GetString("UserRole");
+}
+
 <!-- Muestra el contenido si el usuario está loggeado -->
-@if (ViewContext.HttpContext.Session.GetString("UserRole") != null)
+@if (currentRole != null)
 {
     <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
+        <h1 class="display-4">Bienvenido Cliente</h1>
         <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
     </div>
 }

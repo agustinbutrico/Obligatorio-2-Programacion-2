@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Buy";
+}
+
+@{
+    string? currentRole = ViewContext.HttpContext.Session.GetString("UserRole");
+}
+
+<!-- Muestra el contenido si el usuario está loggeado -->
+@if (currentRole != null)
+{
+    <div class="text-center">
+        <h1 class="display-4">Comprar</h1>
+    </div>
+
+    <div class="wider spaced frame form-container">
+        <p>¿Desea confirmar la compra del producto?</p>
+        <form method="post">
+            <input type="submit" value="Confirmar compra" class="btn btn-primary" />
+        </form>
+    </div>
+
+    <div class="align-center wider frame action-container">
+        <p>Haga click aquí para volver a los detalles de la venta</p>
+        <!-- Botón con redirección a la página de Listar Publicaciones -->
+        <a href="/Publications/ListPublications" class="btn btn-outline-secondary">Volver</a>
+    </div>
+
+    @if (ViewBag.Mensaje != null)
+    {
+        <div class="wider spaced alert alert-danger">
+            @ViewBag.Mensaje
+        </div>
+    }
+
+    @if (ViewBag.Confirmacion != null)
+    {
+        <div class="wider spaced alert alert-info">
+            @ViewBag.Confirmacion
+        </div>
+    }
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-4">Acceso restringido</h1>
+        <label>Ir a login</label>
+        <!-- Botón con redirección a la página de login -->
+        <a href="/Account/Login" class="btn btn-primary">Login</a>
+    </div>
+}

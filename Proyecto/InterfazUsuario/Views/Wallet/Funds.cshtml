@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewData["Title"] = "Funds";
+}
+
+@{
+    string? currentRole = ViewContext.HttpContext.Session.GetString("UserRole");
+}
+
+<!-- Muestra el contenido si el usuario está loggeado -->
+@if (currentRole != null)
+{
+    <!-- Define el modelo a usar -->
+    @model InterfazUsuario.Models.FundsViewModel
+
+    <div class="text-center">
+        <h1 class="display-4">Billetera</h1>
+    </div>
+    @if (Model.Cliente != null)
+    {
+        <div class="wider spaced frame form-container">
+            <p>Fondos disponibles en su cuenta</p>
+            <p>$@Model.Cliente.Saldo</p>
+        </div>
+    }
+    <div class="align-center wider frame action-container">
+        <p>Haga click aquí para añadir saldo a su cuenta</p>
+        <!-- Botón con redirección a la página de añadir saldo -->
+        <a href="/Wallet/AddFunds" class="btn btn-outline-secondary">Añadir fondos</a>
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-4">Acceso restringido</h1>
+        <label>Ir a login</label>
+        <!-- Botón con redirección a la página de login -->
+        <a href="/Account/Login" class="btn btn-primary">Login</a>
+    </div>
+}

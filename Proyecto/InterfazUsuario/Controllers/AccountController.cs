@@ -5,6 +5,7 @@ namespace InterfazUsuario.Controllers
 {
     public class AccountController : Controller
     {
+        // Se llama a la instancia con patron singleton
         private Sistema sistema = Sistema.Instancia;
 
         [HttpGet]
@@ -47,12 +48,14 @@ namespace InterfazUsuario.Controllers
                         if (usuario is Cliente)
                         {
                             HttpContext.Session.SetString("UserRole", "Cliente"); // Guardar el rol en la sesión
-                            return RedirectToAction("Index", "Home");
+                            HttpContext.Session.SetInt32("UserId", usuario.Id);  // Almacenar el Id del usuario
+                            return RedirectToAction("ListPublications", "Publications");
                         }
                         else
                         {
                             HttpContext.Session.SetString("UserRole", "Administrador"); // Guardar el rol en la sesión
-                            return RedirectToAction("IndexAdmin", "Home");
+                            HttpContext.Session.SetInt32("UserId", usuario.Id);  // Almacenar el Id del usuario
+                            return RedirectToAction("ListPublications", "Publications");
                         }
                     }
                 }
@@ -115,7 +118,6 @@ namespace InterfazUsuario.Controllers
                     // Crea el nuevo cliente si es que no existe previamente
                     sistema.AltaCliente(nombre, apellido, email, contrasenia, 0);
                     ViewBag.Confirmacion = "El usuario fue registrado correctamente";
-                    // return RedirectToAction("Account", "Login");
                 }
             }
             catch (InvalidOperationException ex)
@@ -137,6 +139,16 @@ namespace InterfazUsuario.Controllers
 
             // Si algo falla, permanece en la vista de login con el mensaje correspondiente
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            // Limpiar la sesión
+            HttpContext.Session.Clear();
+
+            // Redirigir al login o a la página principal
+            return RedirectToAction("Login", "Account");
         }
     }
 }
