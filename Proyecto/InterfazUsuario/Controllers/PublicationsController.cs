@@ -27,7 +27,7 @@ namespace InterfazUsuario.Controllers
             var listaSubastas = subastas.OfType<Subasta>().ToList();
 
             // Crear el modelo con ambas listas
-            var model = new PublicationsViewModel
+            var model = new ListPublicationsViewModel
             {
                 Ventas = listaVentas,
                 Subastas = listaSubastas
@@ -46,7 +46,7 @@ namespace InterfazUsuario.Controllers
             var subastaActiva = (Subasta?)subasta;
 
             // Crear el modelo con la Subasta
-            var model = new OffertViewModel
+            var model = new ListOffersViewModel
             {
                 Subasta = subastaActiva
             };
@@ -82,10 +82,28 @@ namespace InterfazUsuario.Controllers
                 {
                     // Obtiene el id del Usuario con el dato almacenado al realizar el login
                     int idUser = HttpContext.Session.GetInt32("UserId") ?? 0;
+                    // Almacena en una variable el usuario activo
+                    Usuario? cliente = sistema.ObtenerUsuarioPorId(idUser, true, false);
+                    // Casteo explícito de Cliente
+                    var clienteActivo = (Cliente?)cliente;
+
+                    // Obtiene el id de la Publicacion con el dato almacenado al realizar el login
                     int currentIdSubasta = HttpContext.Session.GetInt32("SubastaId") ?? 0;
+                    // Almacena en una variable la subasta activa
+                    Publicacion? subasta = sistema.ObtenerPublicacionPorId(currentIdSubasta, false, true);
+                    // Casteo explícito de Subasta
+                    var subastaActiva = (Subasta?)subasta;
+
                     // Crea la nueva oferta para la subasta actual
-                    sistema.AltaOferta(sistema.ObtenerUsuarioPorId(idUser, false, false), sistema.ObtenerPublicacionPorId(currentIdSubasta, false, true), monto, DateTime.Now);
-                    ViewBag.Confirmacion = "La oferta fue registrada correctamente";
+                    sistema.AltaOferta(clienteActivo, subastaActiva, monto, DateTime.Now);
+
+
+                    if (clienteActivo != null)
+                    {
+                        // Cobra el valor de la oferta al usuario activo
+                        clienteActivo.Saldo -= monto;
+                        ViewBag.Confirmacion = "La oferta fue registrada correctamente";
+                    }
                 }
             }
             catch (InvalidOperationException ex)

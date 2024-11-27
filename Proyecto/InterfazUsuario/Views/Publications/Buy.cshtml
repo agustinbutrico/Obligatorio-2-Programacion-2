@@ -4,7 +4,6 @@
 
 @{
     string? currentRole = ViewContext.HttpContext.Session.GetString("UserRole");
-    int? currentIdVenta = ViewContext.HttpContext.Session.GetInt32("VentaId");
 }
 
 <!-- Muestra el contenido si el usuario está loggeado -->
@@ -24,7 +23,7 @@
     <div class="align-center wider frame action-container">
         <p>Haga click aquí para volver a los detalles de la venta</p>
         <!-- Botón con redirección a la página de Listar Publicaciones -->
-        <a href="/Publications/ListPublications/@currentIdVenta" class="btn btn-outline-secondary">Volver</a>
+        <a href="/Publications/ListPublications" class="btn btn-outline-secondary">Volver</a>
     </div>
 
     @if (ViewBag.Mensaje != null)

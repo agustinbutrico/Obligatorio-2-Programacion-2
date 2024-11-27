@@ -2,7 +2,7 @@
 
 namespace InterfazUsuario.Models
 {
-    public class OffertViewModel
+    public class ListOffersViewModel
     {
         public Subasta? Subasta { get; set; }
     }
