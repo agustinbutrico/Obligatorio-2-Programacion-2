@@ -48,12 +48,12 @@ namespace InterfazUsuario.Controllers
                         if (usuario is Cliente)
                         {
                             HttpContext.Session.SetString("UserRole", "Cliente"); // Guardar el rol en la sesión
-                            return RedirectToAction("Index", "Home");
+                            return RedirectToAction("Publications", "Publications");
                         }
                         else
                         {
                             HttpContext.Session.SetString("UserRole", "Administrador"); // Guardar el rol en la sesión
-                            return RedirectToAction("IndexAdmin", "Home");
+                            return RedirectToAction("Publications", "Publications");
                         }
                     }
                 }
@@ -116,7 +116,6 @@ namespace InterfazUsuario.Controllers
                     // Crea el nuevo cliente si es que no existe previamente
                     sistema.AltaCliente(nombre, apellido, email, contrasenia, 0);
                     ViewBag.Confirmacion = "El usuario fue registrado correctamente";
-                    // return RedirectToAction("Account", "Login");
                 }
             }
             catch (InvalidOperationException ex)

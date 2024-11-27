@@ -1,0 +1,116 @@
+﻿
+@{
+    ViewData["Title"] = "Publications";
+}
+
+
+<!-- Define el modelo a usar -->
+@model InterfazUsuario.Models.PublicacionesViewModel
+
+<!-- Muestra el contenido si el usuario está loggeado -->
+@if (ViewContext.HttpContext.Session.GetString("UserRole") != null)
+{
+    <div class="text-center">
+        <h1 class="display-4">Publicaciones</h1>
+    </div>
+    @if (Model.Ventas != null && Model.Ventas.Any())
+    {
+        <div class="spaced">
+            <h2>Ventas</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Articulos</th>
+                        <th>Fecha fin</th>
+                        <th>Oferta relampago</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Ventas.Count; i++)
+                    {
+                        var venta = Model.Ventas[i];
+                        decimal precio = 0;
+                        for (int j = 0; j < venta.Articulos.Count; j++)
+                        {
+                            decimal precioTemp = venta.Articulos[j].Precio;
+                            if (venta.OfertaRelampago)
+                            {
+                                precioTemp = (precioTemp * 80) / 100;
+                            }
+                            precio += precioTemp;
+                        }
+                        <tr>
+                            <td>@venta.Nombre</td>
+                            <td>@venta.Estado</td>
+                            <td>@venta.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td>@venta.Articulos.Count</td>
+                            <td>@venta.FechaFin.ToString("dd/MM/yyyy")</td>
+                            <td>@(venta.OfertaRelampago ? "Sí" : "No")</td>
+                            <td>$@precio</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    @if (Model.Subastas != null && Model.Subastas.Any())
+    {
+        <div class="spaced">
+            <h2>Subastas</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Articulos</th>
+                        <th>Fecha fin</th>
+                        <th>Ofertas</th>
+                        <th>Precio</th>
+                        <th>Ofertar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Subastas.Count; i++)
+                    {
+                        var subasta = Model.Subastas[i];
+                        decimal precio = 0;
+                        for (int j = 0; j < subasta.Ofertas.Count; j++)
+                        {
+                            decimal precioTemp = subasta.Ofertas[j].Monto;
+                            if (precioTemp > precio)
+                            {
+                                precio = precioTemp;
+                            }
+                        }
+                        <tr>
+                            <td>@subasta.Nombre</td>
+                            <td>@subasta.Estado</td>
+                            <td>@subasta.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td>@subasta.Articulos.Count</td>
+                            <td>@subasta.FechaFin.ToString("dd/MM/yyyy")</td>
+                            <td>@subasta.Ofertas.Count</td>
+                            <td>$@precio</td>
+                            <td><a href="/Publications/Offers" class="btn btn-primary">Login</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-4">Acceso restringido</h1>
+        <label>Ir a login</label>
+        <!-- Botón con redirección a la página de login -->
+        <a href="/Account/Login" class="btn btn-primary">Login</a>
+    </div>
+}
+
+
