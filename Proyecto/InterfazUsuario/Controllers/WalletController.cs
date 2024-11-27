@@ -1,5 +1,6 @@
 ﻿using InterfazUsuario.Models;
 using LogicaNegocio;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InterfazUsuario.Controllers
@@ -12,22 +13,25 @@ namespace InterfazUsuario.Controllers
         [HttpGet]
         public IActionResult Funds()
         {
-            // Obtiene el id del Usuario con el dato almacenado al realizar el login
-            int idUser = HttpContext.Session.GetInt32("UserId") ?? 0;
-
-            // Almacena en una variable el usuario activo
-            Usuario? cliente = sistema.ObtenerUsuarioPorId(idUser, true, false);
-            // Casteo explícito de Cliente
-            var clienteActivo = (Cliente?)cliente;
-
-            // Crear el modelo con ambas listas
-            var model = new FundsViewModel
+            if (HttpContext.Session.GetString("UserRole") != null)
             {
-                Cliente = clienteActivo
-            };
+                // Obtiene el id del Usuario con el dato almacenado al realizar el login
+                int idUser = HttpContext.Session.GetInt32("UserId") ?? 0;
+                // Almacena en una variable el usuario activo
+                Usuario? cliente = sistema.ObtenerUsuarioPorId(idUser, true, false);
+                // Casteo explícito de Cliente
+                var clienteActivo = (Cliente?)cliente;
 
-            // Pasar el modelo a la vista
-            return View(model);
+                // Crear el modelo con ambas listas
+                var model = new FundsViewModel
+                {
+                    Cliente = clienteActivo
+                };
+
+                // Pasar el modelo a la vista
+                return View(model);
+            }
+            return View();
         }
         [HttpGet]
         public IActionResult AddFunds()

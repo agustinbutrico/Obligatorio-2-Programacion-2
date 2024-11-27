@@ -16,51 +16,61 @@ namespace InterfazUsuario.Controllers
         [HttpGet]
         public IActionResult ListPublications()
         {
-            // Almacena en una variable las ventas
-            List<Publicacion> ventas = sistema.ObtenerPublicaciones(true, false);
-            // Casteo explícito de ventas
-            var listaVentas = ventas.OfType<Venta>().ToList();
-
-            // Almacena en una variable las subastas
-            List<Publicacion> subastas = sistema.ObtenerPublicaciones(false, true);
-            // Casteo explícito de subastas
-            var listaSubastas = subastas.OfType<Subasta>().ToList();
-
-            // Crear el modelo con ambas listas
-            var model = new ListPublicationsViewModel
+            if (HttpContext.Session.GetString("UserRole") != null)
             {
-                Ventas = listaVentas,
-                Subastas = listaSubastas
-            };
+                // Almacena en una variable las ventas
+                List<Publicacion> ventas = sistema.ObtenerPublicaciones(true, false);
+                // Casteo explícito de ventas
+                var listaVentas = ventas.OfType<Venta>().ToList();
 
-            // Pasar el modelo a la vista
-            return View(model);
+                // Almacena en una variable las subastas
+                List<Publicacion> subastas = sistema.ObtenerPublicaciones(false, true);
+                // Casteo explícito de subastas
+                var listaSubastas = subastas.OfType<Subasta>().ToList();
+
+                // Crear el modelo con ambas listas
+                var model = new ListPublicationsViewModel
+                {
+                    Ventas = listaVentas,
+                    Subastas = listaSubastas
+                };
+
+                // Pasar el modelo a la vista
+                return View(model);
+            }
+            return View();
         }
 
         [HttpGet]
         public IActionResult ListOffers(int id)
         {
-            // Almacena en una variable la subasta activa
-            Publicacion? subasta = sistema.ObtenerPublicacionPorId(id, false, true);
-            // Casteo explícito a Subasta
-            var subastaActiva = (Subasta?)subasta;
-
-            // Crear el modelo con la Subasta
-            var model = new ListOffersViewModel
+            if (HttpContext.Session.GetString("UserRole") != null)
             {
-                Subasta = subastaActiva
-            };
+                // Almacena en una variable la subasta activa
+                Publicacion? subasta = sistema.ObtenerPublicacionPorId(id, false, true);
+                // Casteo explícito a Subasta
+                var subastaActiva = (Subasta?)subasta;
 
-            // Pasar el modelo a la vista
-            return View(model);
+                // Crear el modelo con la Subasta
+                var model = new ListOffersViewModel
+                {
+                    Subasta = subastaActiva
+                };
+
+                // Pasar el modelo a la vista
+                return View(model);
+            }
+            return View();
         }
 
         [HttpGet]
         public IActionResult Offert(int id)
         {
-            // Almacena el ID de la subasta en la sesión
-            HttpContext.Session.SetInt32("SubastaId", id);
-            
+            if (HttpContext.Session.GetString("UserRole") != null)
+            {
+                // Almacena el ID de la subasta en la sesión
+                HttpContext.Session.SetInt32("SubastaId", id);
+            }
             return View();
         }
 
@@ -130,9 +140,11 @@ namespace InterfazUsuario.Controllers
         [HttpGet]
         public IActionResult Buy(int id)
         {
-            // Almacena el ID de la venta en la sesión
-            HttpContext.Session.SetInt32("VentaId", id);
-
+            if (HttpContext.Session.GetString("UserRole") != null)
+            {
+                // Almacena el ID de la venta en la sesión
+                HttpContext.Session.SetInt32("VentaId", id);
+            }
             return View();
         }
 

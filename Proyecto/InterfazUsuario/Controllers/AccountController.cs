@@ -140,5 +140,15 @@ namespace InterfazUsuario.Controllers
             // Si algo falla, permanece en la vista de login con el mensaje correspondiente
             return View();
         }
+
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            // Limpiar la sesión
+            HttpContext.Session.Clear();
+
+            // Redirigir al login o a la página principal
+            return RedirectToAction("Login", "Account");
+        }
     }
 }
