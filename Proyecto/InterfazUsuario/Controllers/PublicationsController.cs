@@ -87,7 +87,7 @@ namespace InterfazUsuario.Controllers
                     // Casteo explícito de Cliente
                     var clienteActivo = (Cliente?)cliente;
 
-                    // Obtiene el id de la Publicacion con el dato almacenado al realizar el login
+                    // Obtiene el id de la Publicacion con el dato almacenado al cargar la vista Offert
                     int currentIdSubasta = HttpContext.Session.GetInt32("SubastaId") ?? 0;
                     // Almacena en una variable la subasta activa
                     Publicacion? subasta = sistema.ObtenerPublicacionPorId(currentIdSubasta, false, true);
@@ -143,37 +143,40 @@ namespace InterfazUsuario.Controllers
             {
                 // Obtiene el id del Usuario con el dato almacenado al realizar el login
                 int idUser = HttpContext.Session.GetInt32("UserId") ?? 0;
-                int currentIdVenta = HttpContext.Session.GetInt32("VentaId") ?? 0;
-
-                // Almacena en una variable la venta activa
-                Publicacion? venta = sistema.ObtenerPublicacionPorId(currentIdVenta, true, false);
-                // Casteo exlpícito de Venta
-                var ventaActiva = (Venta?)venta;
-
                 // Almacena en una variable el usuario activo
                 Usuario? cliente = sistema.ObtenerUsuarioPorId(idUser, true, false);
                 // Casteo explícito de Cliente
                 var clienteActivo = (Cliente?)cliente;
 
-                // Almacena en una variable el precio de venta de la venta
-                decimal precioVenta = sistema.ConsultarPrecioVenta(ventaActiva, sistema.ObtenerArticulos());
+                // Obtiene el id de la Publicacion con el dato almacenado al cargar la vista Buy
+                int currentIdVenta = HttpContext.Session.GetInt32("VentaId") ?? 0;
+                // Almacena en una variable la venta activa
+                Publicacion? venta = sistema.ObtenerPublicacionPorId(currentIdVenta, true, false);
+                // Casteo exlpícito de Venta
+                var ventaActiva = (Venta?)venta;
 
-                if (clienteActivo?.Saldo < precioVenta)
+                if (ventaActiva != null && clienteActivo != null)
                 {
-                    ViewBag.Mensaje = "Saldo insuficiente";
-                }
-                else if (ventaActiva?.Estado.ToUpper() != "ABIERTA")
-                {
-                    ViewBag.Mensaje = "La venta no se encuentra activa";
-                }
-                else
-                {
-                    if (clienteActivo != null)
+                    // Almacena en una variable el precio de venta de la venta
+                    decimal precioVenta = sistema.ConsultarPrecioVenta(ventaActiva, ventaActiva.Articulos);
+
+                    if (clienteActivo?.Saldo < precioVenta)
                     {
-                        clienteActivo.Saldo -= precioVenta;
-                        ventaActiva.Cliente = clienteActivo;
-                        ventaActiva.Estado = "CERRADA";
-                        ViewBag.Confirmacion = "La compra fue registrada correctamente, la misma debe ser autorizada por un administrador";
+                        ViewBag.Mensaje = "Saldo insuficiente";
+                    }
+                    else if (ventaActiva?.Estado.ToUpper() != "ABIERTA")
+                    {
+                        ViewBag.Mensaje = "La venta no se encuentra activa";
+                    }
+                    else
+                    {
+                        if (clienteActivo != null)
+                        {
+                            clienteActivo.Saldo -= precioVenta;
+                            ventaActiva.Cliente = clienteActivo;
+                            ventaActiva.Estado = "CERRADA";
+                            ViewBag.Confirmacion = "La compra fue registrada correctamente, la misma debe ser autorizada por un administrador";
+                        }
                     }
                 }
             }
