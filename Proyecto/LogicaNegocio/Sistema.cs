@@ -750,9 +750,9 @@ namespace LogicaNegocio
         }
         #endregion
         #region Publicacion
-        public void AltaPublicacion(string nombre, string estado, DateTime fecha, List<Articulo> articulos, Cliente? cliente, Administrador? administrador, DateTime fechaFin)
+        public void AltaPublicacion(string nombre, string estado, DateTime fecha, List<Articulo> articulos, Cliente? cliente, DateTime fechaFin)
         {
-            Publicacion nuevaPublicacion = new Publicacion(nombre, estado, fecha, articulos, cliente, administrador, fechaFin);
+            Publicacion nuevaPublicacion = new Publicacion(nombre, estado, fecha, articulos, cliente, fechaFin);
             // Validación de la relacion entre los datos ingresados
             nuevaPublicacion.Validar();
             // Si los datos son validos entonces se registra la Publicación
@@ -765,9 +765,9 @@ namespace LogicaNegocio
                 throw new ArgumentException("Ya existe una publicacion registrada con el nombre proporcionado");
             }
         }
-        public void AltaVenta(string nombre, string estado, DateTime fecha, List<Articulo> articulos, Cliente? cliente, Administrador? administrador, DateTime fechaFin, bool ofertaRelampago)
+        public void AltaVenta(string nombre, string estado, DateTime fecha, List<Articulo> articulos, Cliente? cliente, DateTime fechaFin, bool ofertaRelampago)
         {
-            Venta nuevaVenta = new Venta(nombre, estado, fecha, articulos, cliente, administrador, fechaFin, ofertaRelampago);
+            Venta nuevaVenta = new Venta(nombre, estado, fecha, articulos, cliente, fechaFin, ofertaRelampago);
             // Validación de la relacion entre los datos ingresados
             nuevaVenta.Validar();
             // Si los datos son validos entonces se registra la Venta
@@ -860,6 +860,45 @@ namespace LogicaNegocio
             }
         }
         #endregion
+        #endregion
+
+        #region Transacciones
+        public void CompraVenta(Cliente? cliente, Venta? venta)
+        {
+            // Cambia de estado la venta, registra el Cliente que la compró y la fecha de fin
+            venta.Estado = "CERRADA";
+            venta.Cliente = cliente;
+            venta.FechaFin = DateTime.Now;
+
+            // Cobra el valor de la venta al cliente
+            decimal precioVenta = ConsultarPrecioVenta(venta, venta.Articulos);
+            cliente.Saldo -= precioVenta;
+        }
+        public void CompraSubasta(Administrador? administrador, Subasta? subasta)
+        {
+            // Variable para determinar el cliente con el mayor monto que puede pagar
+            bool fueCobrada = false;
+            
+            // Cobra el valor de la venta al cliente con la oferta más alta y saldo disponible
+            for (int i = subasta.Ofertas.Count - 1; i >= 0 || !fueCobrada; i--)
+            {
+                Cliente? clienteActual = subasta.Ofertas[i].Usuario as Cliente;
+
+                if (clienteActual.Saldo >= subasta.Ofertas[i].Monto)
+                {
+                    // Cambia de estado la subasta y registra el cliente que la ganó
+                    subasta.Estado = "CERRADA";
+                    subasta.Cliente = clienteActual;
+                    // Registra el Administrador que cerro la subasta y la fecha fin
+                    subasta.Administrador = administrador;
+                    subasta.FechaFin = DateTime.Now;
+
+                    clienteActual.Saldo -= subasta.Ofertas[i].Monto;
+
+                    fueCobrada = true;
+                }
+            }
+        }
         #endregion
 
         /// <summary>
@@ -967,16 +1006,16 @@ namespace LogicaNegocio
         #region Publicacion
         private void PrecargarPublicacion()
         {
-            AltaVenta("Verano en la playa", "ABIERTA", DateTime.ParseExact("05/01/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 11, 24, 35, 54 }), null, null, DateTime.MinValue, false);
-            AltaVenta("Juego gimnasio", "ABIERTA", DateTime.ParseExact("13/12/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 14, 15, 25, 26, 28, 38 }), null, null, DateTime.MinValue, false);
-            AltaVenta("Caminata en el bosque", "ABIERTA", DateTime.ParseExact("12/02/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 1, 3, 4, 5 }), null, null, DateTime.MinValue, false);
-            AltaVenta("Paseo en bicicleta", "ABIERTA", DateTime.ParseExact("15/03/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 6, 8, 9, 10 }), null, null, DateTime.MinValue, false);
-            AltaVenta("Clase de yoga", "ABIERTA", DateTime.ParseExact("22/04/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 12, 13, 16, 18, 20 }), null, null, DateTime.MinValue, false);
-            AltaVenta("Día de spa", "ABIERTA", DateTime.ParseExact("30/05/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 21, 22, 23, 29 }), null, null, DateTime.MinValue, true);
-            AltaVenta("Concierto al aire libre", "ABIERTA", DateTime.ParseExact("01/08/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 30, 31, 32, 34, 37 }), null, null, DateTime.MinValue, false);
-            AltaVenta("Cata de vinos", "PENDIENTE", DateTime.ParseExact("10/09/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 40, 41, 42 }), ObtenerUsuarioPorId(3, true, false) as Cliente, null, DateTime.MinValue, false);
-            AltaVenta("Taller de pintura", "PENDIENTE", DateTime.ParseExact("15/10/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 43, 44, 45, 46 }), ObtenerUsuarioPorId(3, true, false) as Cliente, null, DateTime.MinValue, false);
-            AltaVenta("Excursión a la montaña", "CERRADA", DateTime.ParseExact("25/11/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 47, 48, 49 }), ObtenerUsuarioPorId(3, true, false) as Cliente, ObtenerUsuarioPorId(0, false, true) as Administrador, DateTime.ParseExact("05/11/2024", "dd/MM/yyyy", null), false);
+            AltaVenta("Verano en la playa", "ABIERTA", DateTime.ParseExact("05/01/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 11, 24, 35, 54 }), null, DateTime.MinValue, false);
+            AltaVenta("Juego gimnasio", "ABIERTA", DateTime.ParseExact("13/12/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 14, 15, 25, 26, 28, 38 }), null, DateTime.MinValue, false);
+            AltaVenta("Caminata en el bosque", "ABIERTA", DateTime.ParseExact("12/02/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 1, 3, 4, 5 }), null, DateTime.MinValue, false);
+            AltaVenta("Paseo en bicicleta", "ABIERTA", DateTime.ParseExact("15/03/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 6, 8, 9, 10 }), null, DateTime.MinValue, false);
+            AltaVenta("Clase de yoga", "ABIERTA", DateTime.ParseExact("22/04/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 12, 13, 16, 18, 20 }), null, DateTime.MinValue, false);
+            AltaVenta("Día de spa", "ABIERTA", DateTime.ParseExact("30/05/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 21, 22, 23, 29 }), null, DateTime.MinValue, true);
+            AltaVenta("Concierto al aire libre", "ABIERTA", DateTime.ParseExact("01/08/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 30, 31, 32, 34, 37 }), null, DateTime.MinValue, false);
+            AltaVenta("Cata de vinos", "ABIERTA", DateTime.ParseExact("10/09/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 40, 41, 42 }), null, DateTime.MinValue, false);
+            AltaVenta("Taller de pintura", "CERRADA", DateTime.ParseExact("15/10/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 43, 44, 45, 46 }), ObtenerUsuarioPorId(3, true, false) as Cliente, DateTime.ParseExact("05/11/2024", "dd/MM/yyyy", null), false);
+            AltaVenta("Excursión a la montaña", "CERRADA", DateTime.ParseExact("25/11/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 47, 48, 49 }), ObtenerUsuarioPorId(3, true, false) as Cliente, DateTime.ParseExact("26/11/2024", "dd/MM/yyyy", null), false);
             AltaSubasta("Vuelta ciclista", "CERRADA", DateTime.ParseExact("06/01/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 27, 33, 39 }), ObtenerUsuarioPorId(8, true, false) as Cliente, ObtenerUsuarioPorId(1, false, true) as Administrador, DateTime.ParseExact("30/07/2024", "dd/MM/yyyy", null), new List<Oferta>());
             AltaSubasta("Set camping", "ABIERTA", DateTime.ParseExact("21/07/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 7, 34 ,36 }), null, null, DateTime.MinValue, new List<Oferta>());
             AltaSubasta("Torneo de ajedrez", "ABIERTA", DateTime.ParseExact("12/03/2024", "dd/MM/yyyy", null), ObtenerArticuloPorId(new List<int> { 50, 51, 52 }), null, null, DateTime.MinValue, new List<Oferta>());
@@ -995,10 +1034,10 @@ namespace LogicaNegocio
             AltaAdministrador("Valentin", "Latorre", "ValentinLatorre@Gmail.com", "Valentin1234");
             AltaAdministrador("Agustin", "Butrico", "AgustinButrico@gmail.com", "Agustin1234");
             AltaCliente("Juan", "Peres", "Juanperes@hmail.com", "Juan1234", 5600);
-            AltaCliente("Esteban", "Lopez", "EstebanLopez@hmail.com", "5566AS43", 2000);
-            AltaCliente("Carlos", "Medina", "CarlosMedina@hmail.com", "Medina1234", 4500);
+            AltaCliente("Esteban", "Lopez", "EstebanLopez@hmail.com", "5566AS43", 27000);
+            AltaCliente("Carlos", "Medina", "CarlosMedina@hmail.com", "Medina1234", 7500);
             AltaCliente("Mariano", "Morales", "MarianoMorales@hmail.com", "Mariano2", 5000);
-            AltaCliente("Estela", "Rosales", "EstelaRosales@hmail.com", "Rosalia46", 300);
+            AltaCliente("Estela", "Rosales", "EstelaRosales@hmail.com", "Rosalia46", 1700);
             AltaCliente("Marcos", "Sauce", "MarcosSauce@hmail.com", "Sauce311", 30000);
             AltaCliente("Lucia", "Gomez", "LuciaGomezs@hmail.com", "Lucia1990", 7200);
             AltaCliente("Rodrigo", "Barrios", "RodrigoBarrios@hmail.com", "RodrigoBarrios12", 900);

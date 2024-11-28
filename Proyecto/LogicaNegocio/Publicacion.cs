@@ -18,7 +18,6 @@ namespace LogicaNegocio
         private DateTime _fecha = DateTime.Now; // Inicializado con la fecha actual
         private List<Articulo> _articulos = new List<Articulo>(); // Inicializado con una lista vacía
         private Cliente? _cliente; // Inicializado con una instancia por defecto
-        private Administrador? _administrador; // Inicializado con una instancia por defecto
         private DateTime _fechaFin = DateTime.Now; // Inicializado con la fecha actual
         #endregion
 
@@ -57,15 +56,10 @@ namespace LogicaNegocio
             get { return _cliente; }
             set { _cliente = value; }
         }
-        public Administrador? Administrador
-        {
-            get { return _administrador; }
-            set { _administrador = value; }
-        }
         #endregion
 
         #region Constructor
-        public Publicacion(string nombre, string estado, DateTime fecha, List<Articulo> articulos, Cliente? cliente, Administrador? administrador, DateTime fechaFin)
+        public Publicacion(string nombre, string estado, DateTime fecha, List<Articulo> articulos, Cliente? cliente, DateTime fechaFin)
         {
             _id = Publicacion.s_ultId; // Asigna el ID único
             Publicacion.s_ultId++; // Incrementa el ID único
@@ -74,7 +68,6 @@ namespace LogicaNegocio
             Fecha = fecha;
             Articulos = articulos;
             Cliente = cliente;
-            Administrador = administrador;
             FechaFin = fechaFin;
         }
         #endregion
@@ -91,7 +84,7 @@ namespace LogicaNegocio
         }
         private static string EvaluarEstado(string estado)
         {
-            if (estado != "ABIERTA" && estado != "CERRADA" && estado != "CANCELADA" && estado != "PENDIENTE")
+            if (estado != "ABIERTA" && estado != "CERRADA" && estado != "CANCELADA")
             {
                 throw new ArgumentException("El estado de la publicacion tiene que ser ABIERTA, CERRADA o CANCELADA");
             }

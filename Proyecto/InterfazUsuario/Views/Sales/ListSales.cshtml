@@ -1,0 +1,92 @@
+﻿@{
+    ViewData["Title"] = "ListSales";
+}
+
+@{
+    string? currentRole = ViewContext.HttpContext.Session.GetString("UserRole");
+}
+
+<!-- Muestra el contenido si el usuario está loggeado -->
+@if (currentRole != null)
+{
+    <!-- Define el modelo a usar -->
+    @model InterfazUsuario.Models.ListSalesViewModel
+
+    <div class="text-center">
+        <h1 class="display-4">Ventas</h1>
+    </div>
+
+    @if (Model.Ventas != null && Model.Ventas.Any())
+    {
+        <div class="spaced frame">
+            <table class="table custom-row-height">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Articulos</th>
+                        <th>Cliente</th>
+                        <th>Fecha fin</th>
+                        <th>Oferta relampago</th>
+                        <th>Precio</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Ventas.Count; i++)
+                    {
+                        var venta = Model.Ventas[i];
+                        decimal precio = 0;
+                        for (int j = 0; j < venta.Articulos.Count; j++)
+                        {
+                            decimal precioTemp = venta.Articulos[j].Precio;
+                            if (venta.OfertaRelampago)
+                            {
+                                precioTemp = (precioTemp * 80) / 100;
+                            }
+                            precio += precioTemp;
+                        }
+                        <tr>
+                            <td>@venta.Id</td>
+                            <td>@venta.Nombre</td>
+                            <td>@venta.Estado</td>
+                            <td>@venta.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td>@venta.Articulos.Count</td>
+                            <td>@venta.Cliente?.Nombre</td>
+                            <td>
+                                @if (venta.FechaFin != DateTime.MinValue)
+                                {
+                                    @venta.FechaFin.ToString("dd/MM/yyyy")
+                                    ;
+                                }
+                            </td>
+                            <td>@(venta.OfertaRelampago ? "Sí" : "No")</td>
+                            <td>$@precio</td>
+                            <td>
+                                @if (venta.Estado.ToUpper() == "ABIERTA" && currentRole == "Cliente")
+                                {
+                                    <a href="/Publications/SaleDetails/@venta.Id" class="btn btn-primary">Comprar</a>
+                                }
+                                else if (currentRole == "Administrador")
+                                {
+                                    <a href="/Publications/SaleDetails/@venta.Id" class="btn btn-primary">Administrar</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-4">Acceso restringido</h1>
+        <label>Ir a login</label>
+        <!-- Botón con redirección a la página de login -->
+        <a href="/Account/Login" class="btn btn-primary">Login</a>
+    </div>
+}
