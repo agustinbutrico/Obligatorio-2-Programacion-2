@@ -31,7 +31,7 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Wallet" asp-action="Funds">Billetera</a>
                                 </li>
                             }
-                            else if (currentRole != null)
+                            @if (currentRole == "Cliente" || currentRole == "Administrador")
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Publications" asp-action="ListPublications">Publicaciones</a>
