@@ -64,9 +64,15 @@
                             <td>@(venta.OfertaRelampago ? "Sí" : "No")</td>
                             <td>$@precio</td>
                             <td>
-                                @if (venta.Estado.ToUpper() == "ABIERTA")
+                                @if (venta.Estado.ToUpper() == "ABIERTA" && currentRole == "Cliente")
                                 {
                                     <a href="/Publications/Buy/@venta.Id" class="btn btn-primary">Comprar</a>
+                                }
+                            </td>
+                            <td>
+                                @if (venta.Estado.ToUpper() == "ABIERTA" && currentRole == "Administrador")
+                                {
+                                    <a href="/Publications/Close/@venta.Id" class="btn btn-primary">Cerrar</a>
                                 }
                             </td>
                         </tr>

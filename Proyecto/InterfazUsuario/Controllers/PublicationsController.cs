@@ -21,18 +21,24 @@ namespace InterfazUsuario.Controllers
                 // Almacena en una variable las ventas
                 List<Publicacion> ventas = sistema.ObtenerPublicaciones(true, false);
                 // Casteo explícito de ventas
-                var listaVentas = ventas.OfType<Venta>().ToList();
+                List<Venta> listaVentas = ventas.OfType<Venta>().ToList();
+
+                // Ordenar por fecha (ascendente)
+                List<Venta> listaVentasOrdenada = listaVentas.OrderBy(p => p.Fecha).ToList();
 
                 // Almacena en una variable las subastas
                 List<Publicacion> subastas = sistema.ObtenerPublicaciones(false, true);
                 // Casteo explícito de subastas
-                var listaSubastas = subastas.OfType<Subasta>().ToList();
+                List<Subasta> listaSubastas = subastas.OfType<Subasta>().ToList();
+
+                // Ordenar por fecha (ascendente)
+                List<Subasta> listaSubastasOrdenada = listaSubastas.OrderBy(p => p.Fecha).ToList();
 
                 // Crear el modelo con ambas listas
                 var model = new ListPublicationsViewModel
                 {
-                    Ventas = listaVentas,
-                    Subastas = listaSubastas
+                    Ventas = listaVentasOrdenada,
+                    Subastas = listaSubastasOrdenada
                 };
 
                 // Pasar el modelo a la vista
@@ -49,7 +55,7 @@ namespace InterfazUsuario.Controllers
                 // Almacena en una variable la subasta activa
                 Publicacion? subasta = sistema.ObtenerPublicacionPorId(id, false, true);
                 // Casteo explícito a Subasta
-                var subastaActiva = (Subasta?)subasta;
+                Subasta? subastaActiva = (Subasta?)subasta;
 
                 // Crear el modelo con la Subasta
                 var model = new ListOffersViewModel
@@ -95,14 +101,14 @@ namespace InterfazUsuario.Controllers
                     // Almacena en una variable el usuario activo
                     Usuario? cliente = sistema.ObtenerUsuarioPorId(idUser, true, false);
                     // Casteo explícito de Cliente
-                    var clienteActivo = (Cliente?)cliente;
+                    Cliente? clienteActivo = (Cliente?)cliente;
 
                     // Obtiene el id de la Publicacion con el dato almacenado al cargar la vista Offert
                     int currentIdSubasta = HttpContext.Session.GetInt32("SubastaId") ?? 0;
                     // Almacena en una variable la subasta activa
                     Publicacion? subasta = sistema.ObtenerPublicacionPorId(currentIdSubasta, false, true);
                     // Casteo explícito de Subasta
-                    var subastaActiva = (Subasta?)subasta;
+                    Subasta? subastaActiva = (Subasta?)subasta;
 
                     // Crea la nueva oferta para la subasta actual
                     sistema.AltaOferta(clienteActivo, subastaActiva, monto, DateTime.Now);
@@ -133,7 +139,7 @@ namespace InterfazUsuario.Controllers
                 ViewBag.Mensaje = $"Error inesperado: {ex.Message}";
             }
 
-            // Si algo falla, permanece en la vista de login con el mensaje correspondiente
+            // Si algo falla, permanece en la vista
             return View();
         }
 
@@ -142,8 +148,30 @@ namespace InterfazUsuario.Controllers
         {
             if (HttpContext.Session.GetString("UserRole") != null)
             {
+                // Obtiene el id del Usuario con el dato almacenado al realizar el login
+                int idUser = HttpContext.Session.GetInt32("User     Id") ?? 0;
+                // Almacena en una variable el usuario activo
+                Usuario? cliente = sistema.ObtenerUsuarioPorId(idUser, true, false);
+                // Casteo explícito de Cliente
+                Cliente? clienteActivo = (Cliente?)cliente;
+                // Almacena el cliente en una variable
+                if (clienteActivo != null)
+                {
+                    ViewBag.Cliente = clienteActivo;
+                }
+
                 // Almacena el ID de la venta en la sesión
                 HttpContext.Session.SetInt32("VentaId", id);
+
+                // Almacena en una variable la venta activa
+                Publicacion? venta = sistema.ObtenerPublicacionPorId(id, true, false);
+                // Casteo exlpícito de Venta
+                Venta? ventaActiva = (Venta?)venta;
+                // Almacena la venta en una variable
+                if (ventaActiva != null)
+                {
+                    ViewBag.Venta = ventaActiva;
+                }
             }
             return View();
         }
@@ -158,18 +186,28 @@ namespace InterfazUsuario.Controllers
                 // Almacena en una variable el usuario activo
                 Usuario? cliente = sistema.ObtenerUsuarioPorId(idUser, true, false);
                 // Casteo explícito de Cliente
-                var clienteActivo = (Cliente?)cliente;
+                Cliente? clienteActivo = (Cliente?)cliente;
+                // Almacena el cliente en una variable
+                if (clienteActivo != null)
+                {
+                    ViewBag.Cliente = clienteActivo;
+                }
 
                 // Obtiene el id de la Publicacion con el dato almacenado al cargar la vista Buy
                 int currentIdVenta = HttpContext.Session.GetInt32("VentaId") ?? 0;
                 // Almacena en una variable la venta activa
                 Publicacion? venta = sistema.ObtenerPublicacionPorId(currentIdVenta, true, false);
                 // Casteo exlpícito de Venta
-                var ventaActiva = (Venta?)venta;
+                Venta? ventaActiva = (Venta?)venta;
+                // Almacena la venta en una variable
+                if (ventaActiva != null)
+                {
+                    ViewBag.Venta = ventaActiva;
+                }
 
                 if (ventaActiva != null && clienteActivo != null)
                 {
-                    // Almacena en una variable el precio de venta de la venta
+                    // Almacena en una variable el precio de venta
                     decimal precioVenta = sistema.ConsultarPrecioVenta(ventaActiva, ventaActiva.Articulos);
 
                     if (clienteActivo?.Saldo < precioVenta)
@@ -186,7 +224,7 @@ namespace InterfazUsuario.Controllers
                         {
                             clienteActivo.Saldo -= precioVenta;
                             ventaActiva.Cliente = clienteActivo;
-                            ventaActiva.Estado = "CERRADA";
+                            ventaActiva.Estado = "PENDIENTE";
                             ViewBag.Confirmacion = "La compra fue registrada correctamente, la misma debe ser autorizada por un administrador";
                         }
                     }
@@ -209,7 +247,112 @@ namespace InterfazUsuario.Controllers
                 ViewBag.Mensaje = $"Error inesperado: {ex.Message}";
             }
 
-            // Si algo falla, permanece en la vista de login con el mensaje correspondiente
+            // Si algo falla, permanece en la vista
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult CloseAuction(int id)
+        {
+            if (HttpContext.Session.GetString("UserRole") != null)
+            {
+                // Obtiene el id del Usuario con el dato almacenado al realizar el login
+                int idUser = HttpContext.Session.GetInt32("UserId") ?? 0;
+                // Almacena en una variable el usuario activo
+                Usuario? administrador = sistema.ObtenerUsuarioPorId(idUser, false, true);
+                // Casteo explícito de Administrador
+                Administrador? administradorActivo = (Administrador?)administrador;
+                // Almacena el administrador en una variable
+                if (administradorActivo != null)
+                {
+                    ViewBag.Administrador = administradorActivo;
+                }
+
+                // Almacena el ID de la subasta en la sesión
+                HttpContext.Session.SetInt32("SubastaId", id);
+
+                // Almacena en una variable la subasta activa
+                Publicacion? subasta = sistema.ObtenerPublicacionPorId(id, false, true);
+                // Casteo exlpícito de Subasta
+                Subasta? subastaActiva = (Subasta?)subasta;
+                // Almacena la subasta en una variable
+                if (subastaActiva != null)
+                {
+                    ViewBag.Subasta = subastaActiva;
+                }
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CloseAuction()
+        {
+            try
+            {
+                // Obtiene el id del Usuario con el dato almacenado al realizar el login
+                int idUser = HttpContext.Session.GetInt32("UserId") ?? 0;
+                // Almacena en una variable el usuario activo
+                Usuario? administrador = sistema.ObtenerUsuarioPorId(idUser, false, true);
+                // Casteo explícito de Administrador
+                Administrador? administradorActivo = (Administrador?)administrador;
+                // Almacena el cliente en una variable
+                if (administradorActivo != null)
+                {
+                    ViewBag.Administrador = administradorActivo;
+                }
+
+                // Obtiene el id de la Publicacion con el dato almacenado al cargar la vista Close
+                int currentIdSubasta = HttpContext.Session.GetInt32("SubastaId") ?? 0;
+                // Almacena en una variable la subasta activa
+                Publicacion? subasta = sistema.ObtenerPublicacionPorId(currentIdSubasta, false, true);
+                // Casteo exlpícito de Subasta
+                Subasta? subastaActiva = (Subasta?)subasta;
+                // Almacena la subasta en una variable
+                if (subastaActiva != null)
+                {
+                    ViewBag.Subasta = subastaActiva;
+                }
+
+                if (subastaActiva != null && administradorActivo != null)
+                {
+                    // Almacena en una variable el precio de la mejor oferta en la subasta
+                    // El monto de la ultima oferta realizada es la mejor oferta
+                    decimal precioSubasta = subastaActiva.Ofertas[subastaActiva.Ofertas.Count -1].Monto;
+
+                    if (subastaActiva?.Estado.ToUpper() != "ABIERTA")
+                    {
+                        ViewBag.Mensaje = "La subasta no se encuentra activa";
+                    }
+                    else
+                    {
+                        if (administradorActivo != null)
+                        {
+                            subastaActiva.Estado = "CERRADA";
+                            subastaActiva.Administrador = administradorActivo;
+                            subastaActiva.FechaFin = DateTime.Now;
+                            ViewBag.Confirmacion = "La subasta fue cerrada correctamente";
+                        }
+                    }
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                ViewBag.Mensaje = $"Error de operación: {ex.Message}";
+            }
+            catch (ArgumentNullException ex)
+            {
+                ViewBag.Mensaje = $"{ex.Message}";
+            }
+            catch (ArgumentException ex)
+            {
+                ViewBag.Mensaje = $"{ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Mensaje = $"Error inesperado: {ex.Message}";
+            }
+
+            // Si algo falla, permanece en la vista
             return View();
         }
     }

@@ -91,7 +91,7 @@ namespace LogicaNegocio
         }
         private static string EvaluarEstado(string estado)
         {
-            if (estado != "ABIERTA" && estado != "CERRADA" && estado != "CANCELADA")
+            if (estado != "ABIERTA" && estado != "CERRADA" && estado != "CANCELADA" && estado != "PENDIENTE")
             {
                 throw new ArgumentException("El estado de la publicacion tiene que ser ABIERTA, CERRADA o CANCELADA");
             }
