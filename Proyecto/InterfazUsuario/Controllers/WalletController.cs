@@ -13,7 +13,7 @@ namespace InterfazUsuario.Controllers
         [HttpGet]
         public IActionResult Funds()
         {
-            if (HttpContext.Session.GetString("UserRole") == "CLIENTE")
+            if (HttpContext.Session.GetString("UserRole") == "Cliente")
             {
                 // Obtiene el id del Usuario con el dato almacenado al realizar el login
                 int idUser = HttpContext.Session.GetInt32("UserId") ?? 0;
