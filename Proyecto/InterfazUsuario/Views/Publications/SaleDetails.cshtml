@@ -25,7 +25,7 @@
         {
             <!-- Datos sobre la venta -->
             <div class="spaced">
-                <table class="table">
+                <table class="table custom-row-height">
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -72,7 +72,7 @@
             </div>
             <!-- Datos sobre los articulos asociados a la venta -->
             <div class="spaced">
-                <table class="table">
+                <table class="table custom-row-height">
                     <thead>
                         <tr>
                             <th>Nombre</th>
@@ -101,10 +101,6 @@
             @if (currentRole == "Cliente")
             {
                 <button type="submit" name="action" value="BuySale" class="btn btn-primary">Confirmar compra</button>
-            }
-            else
-            {
-                <button type="submit" name="action" value="CloseSale" class="btn btn-secondary">Cerrar venta</button>
             }
         </form>
     </div>

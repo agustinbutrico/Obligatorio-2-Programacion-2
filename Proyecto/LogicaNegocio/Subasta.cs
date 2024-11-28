@@ -9,10 +9,16 @@ namespace LogicaNegocio
     public class Subasta : Publicacion
     {
         #region Atributos de la clase
+        private Administrador? _administrador; // Inicializado con una instancia por defecto
         private List<Oferta> _ofertas = new List<Oferta>(); // Inicializado con una lista vacía
         #endregion
 
         #region Propiedades
+        public Administrador? Administrador
+        {
+            get { return _administrador; }
+            set { _administrador = value; }
+        }
         public List<Oferta> Ofertas
         {
             get { return _ofertas; }
@@ -22,8 +28,9 @@ namespace LogicaNegocio
 
         #region Constructor
         public Subasta(string nombre, string estado, DateTime fecha, List<Articulo> articulos, Cliente? cliente, Administrador? administrador, DateTime fechaFin, List<Oferta> ofertas)
-            : base(nombre, estado, fecha, articulos, cliente, administrador, fechaFin) // Llamada al constructor de la clase base (Publicacion)
+            : base(nombre, estado, fecha, articulos, cliente, fechaFin) // Llamada al constructor de la clase base (Publicacion)
         {
+            Administrador = administrador;
             Ofertas = ofertas;
         }
         #endregion
@@ -52,7 +59,7 @@ namespace LogicaNegocio
         public void AltaOferta(Usuario? usuario, decimal monto, DateTime fecha)
         {
             Oferta oferta = new Oferta(usuario, monto, fecha); // Crea una oferta con el costructor de Oferta
-            if (usuario != null && !Ofertas.Contains(oferta)) // Utilizando el Equals de Oferta valida que un usuario no haga más de una oferta
+            if (!Ofertas.Contains(oferta)) // Utilizando el Equals de Oferta valida que un usuario no haga más de una oferta
             {
                 Ofertas.Add(oferta); // Añade a la lista _ofertas
             }

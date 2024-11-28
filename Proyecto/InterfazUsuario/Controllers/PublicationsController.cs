@@ -107,7 +107,7 @@ namespace InterfazUsuario.Controllers
                         Usuario? cliente = sistema.ObtenerUsuarioPorId(idUser, true, false);
                         // Casteo explícito de Cliente
                         Cliente? clienteActivo = (Cliente?)cliente;
-                        
+
                         if (clienteActivo != null)
                         {
                             // Almacena el cliente en una variable
@@ -130,20 +130,13 @@ namespace InterfazUsuario.Controllers
                                 if (clienteActivo != null)
                                 {
                                     // Cambia de estado la venta y registra el Cliente que la compró
-                                    ventaActiva.Cliente = clienteActivo;
-                                    ventaActiva.Estado = "PENDIENTE";
-
-                                    // Cobra el valor de la oferta al usuario activo
-                                    clienteActivo.Saldo -= precioVenta;
+                                    // Cobra el valor de la venta al usuario activo
+                                    sistema.CompraVenta(clienteActivo, ventaActiva);
 
                                     // Mensaje de Confirmación
                                     ViewBag.Confirmacion = "La compra fue registrada correctamente, la misma debe ser autorizada por un administrador";
                                 }
                             }
-                        }
-                        else if (currentRole == "Administrador" && action == "CloseSale")
-                        {
-                            // Logica para el cierre de Publicaciones de tipo Venta
                         }
                     }
                 }
@@ -282,9 +275,6 @@ namespace InterfazUsuario.Controllers
                                 // Crea la nueva oferta para la subasta actual
                                 sistema.AltaOferta(clienteActivo, subastaActiva, monto, DateTime.Now);
 
-                                // Cobra el valor de la oferta al usuario activo
-                                clienteActivo.Saldo -= monto;
-
                                 // Mensaje de Confirmación
                                 ViewBag.Confirmacion = "La oferta fue registrada correctamente";
                             }
@@ -305,27 +295,6 @@ namespace InterfazUsuario.Controllers
                             // Almacena el administrador en una variable
                             ViewBag.Administrador = administradorActivo;
 
-                            // Almacena en una variable la oferta más alta
-                            decimal mejorOferta = 0;
-                            // Almacena en una variable el id del cliete que ganó la subasta
-                            int idClienteGanador = 0;
-
-                            for (int i = 0; i < subastaActiva.Ofertas.Count; i++)
-                            {
-                                // Usa el operador de condicional nulo para evitar un null reference en Usuario
-                                if (subastaActiva.Ofertas[i].Monto > mejorOferta)
-                                {
-                                    mejorOferta = subastaActiva.Ofertas[i].Monto;
-                                    idClienteGanador = subastaActiva.Ofertas[i].Usuario.Id;
-                                }
-                            }
-
-                            // Almacena en una variable el cliente ganador
-                            Usuario? usuarioGanador = sistema.ObtenerUsuarioPorId(idClienteGanador, true, false);
-                            // Casteo explícito de Administrador
-                            Cliente? clienteGanador = (Cliente?)usuarioGanador;
-
-
                             // Manejo de errores
                             if (subastaActiva?.Estado.ToUpper() != "ABIERTA")
                             {
@@ -337,13 +306,9 @@ namespace InterfazUsuario.Controllers
                             }
                             else
                             {
-                                // Modifica los datos de la subasta y registra el Administrador que cerro la subasta
-                                subastaActiva.Estado = "CERRADA";
-                                subastaActiva.Administrador = administradorActivo;
-                                subastaActiva.FechaFin = DateTime.Now;
-
-                                // Registra el Cliente que ganó la subasta
-                                subastaActiva.Cliente = clienteGanador;
+                                // Cambia de estado la subasta y registra el cliente que la ganó
+                                // Registra el Administrador que cerro la subasta y la fecha fin
+                                sistema.CompraSubasta(administradorActivo, subastaActiva);
 
                                 // Mensaje de Confirmación
                                 ViewBag.Confirmacion = "La subasta fue cerrada correctamente";
