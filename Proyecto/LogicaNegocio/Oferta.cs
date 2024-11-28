@@ -16,9 +16,6 @@ namespace LogicaNegocio
         private Usuario? _usuario; // Inicializado con una instancia por defecto
         private decimal _monto = 0; // Inicializado con 0
         private DateTime _fecha = DateTime.Now; // Inicializado con la fecha actual
-
-        private static decimal s_ultimoMonto = 0;  // Almacena el último monto ingresado
-
         #endregion
 
         #region Propiedades
@@ -74,11 +71,6 @@ namespace LogicaNegocio
             {
                 throw new InvalidOperationException("El monto debe ser un número entero");
             }
-            if (monto <= s_ultimoMonto)
-            {
-                throw new InvalidOperationException($"El monto ingresado debe ser mayor a la mejor oferta");
-            }
-            s_ultimoMonto = monto; // Actualiza el último monto registrado
             return monto;
         }
         // Validación de Oferta

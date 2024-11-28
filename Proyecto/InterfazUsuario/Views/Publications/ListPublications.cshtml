@@ -29,6 +29,11 @@
                         <th>Estado</th>
                         <th>Fecha</th>
                         <th>Articulos</th>
+                        @if (currentRole == "Administrador")
+                        {
+                            <th>Cliente</th>
+                            <th>Administrador</th>
+                        }
                         <th>Fecha fin</th>
                         <th>Oferta relampago</th>
                         <th>Precio</th>
@@ -55,6 +60,11 @@
                             <td>@venta.Estado</td>
                             <td>@venta.Fecha.ToString("dd/MM/yyyy")</td>
                             <td>@venta.Articulos.Count</td>
+                            @if (currentRole == "Administrador")
+                            {
+                                <td>@venta.Cliente?.Nombre</td>
+                                <td>@venta.Administrador?.Nombre</td>
+                            }
                             <td>
                                 @if (venta.Estado.ToUpper() == "ABIERTA")
                                 {
@@ -66,13 +76,11 @@
                             <td>
                                 @if (venta.Estado.ToUpper() == "ABIERTA" && currentRole == "Cliente")
                                 {
-                                    <a href="/Publications/Buy/@venta.Id" class="btn btn-primary">Comprar</a>
+                                    <a href="/Publications/SaleDetails/@venta.Id" class="btn btn-primary">Comprar</a>
                                 }
-                            </td>
-                            <td>
-                                @if (venta.Estado.ToUpper() == "ABIERTA" && currentRole == "Administrador")
+                                else if (venta.Estado.ToUpper() == "ABIERTA" && currentRole == "Administrador")
                                 {
-                                    <a href="/Publications/Close/@venta.Id" class="btn btn-primary">Cerrar</a>
+                                    <a href="/Publications/SaleDetails/@venta.Id" class="btn btn-primary">Administrar</a>
                                 }
                             </td>
                         </tr>
@@ -94,6 +102,11 @@
                         <th>Estado</th>
                         <th>Fecha</th>
                         <th>Articulos</th>
+                        @if (currentRole == "Administrador")
+                        {
+                            <th>Cliente</th>
+                            <th>Administrador</th>
+                        }
                         <th>Fecha fin</th>
                         <th>Ofertas</th>
                         <th>Precio</th>
@@ -119,6 +132,11 @@
                             <td>@subasta.Estado</td>
                             <td>@subasta.Fecha.ToString("dd/MM/yyyy")</td>
                             <td>@subasta.Articulos.Count</td>
+                            @if (currentRole == "Administrador")
+                            {
+                                <td>@subasta.Cliente?.Nombre</td>
+                                <td>@subasta.Administrador?.Nombre</td>
+                            }
                             <td>
                                 @if (subasta.Estado.ToUpper() == "ABIERTA")
                                 {
@@ -128,9 +146,13 @@
                             <td>@subasta.Ofertas.Count</td>
                             <td>$@precio</td>
                             <td>
-                                @if (subasta.Estado.ToUpper() == "ABIERTA")
+                                @if (subasta.Estado.ToUpper() == "ABIERTA" && currentRole == "Cliente")
                                 {
-                                    <a href="/Publications/ListOffers/@subasta.Id" class="btn btn-primary">Detalles</a>
+                                    <a href="/Publications/AuctionDetails/@subasta.Id" class="btn btn-primary">Ofertar</a>
+                                }
+                                else if (subasta.Estado.ToUpper() == "ABIERTA" && currentRole == "Administrador")
+                                {
+                                    <a href="/Publications/AuctionDetails/@subasta.Id" class="btn btn-primary">Administrar</a>
                                 }
                             </td>
                         </tr>

@@ -1,26 +1,29 @@
 ﻿@{
-    ViewData["Title"] = "Buy";
+    ViewData["Title"] = "SaleDetails";
 }
 
 @{
     string? currentRole = ViewContext.HttpContext.Session.GetString("UserRole");
+    var cliente = ViewBag.Cliente;
+    var venta = ViewBag.Venta;
 }
 
 <!-- Muestra el contenido si el usuario está loggeado -->
 @if (currentRole != null)
 {
     <div class="text-center">
-        <h1 class="display-4">Comprar</h1>
+        <h1 class="display-4">Detalles venta</h1>
     </div>
 
     <div class="widest spaced frame">
-        @if (ViewBag.Cliente != null)
+        @if (ViewBag.Cliente != null && currentRole == "Cliente")
         {
-            <p class="text-dark">Saldo disponible: $@ViewBag.Cliente.Saldo</p>
+            <p class="text-dark">Saldo disponible: $@cliente.Saldo</p>
         }
-        
+
         @if (ViewBag.Venta != null)
         {
+            <!-- Datos sobre la venta -->
             <div class="spaced">
                 <table class="table">
                     <thead>
@@ -30,6 +33,10 @@
                             <th>Estado</th>
                             <th>Fecha</th>
                             <th>Articulos</th>
+                            @if (currentRole == "Administrador")
+                            {
+                                <th>Cliente</th>
+                            }
                             <th>Oferta relampago</th>
                             <th>Precio</th>
                         </tr>
@@ -37,10 +44,10 @@
                     <tbody>
                         @{
                             decimal precio = 0;
-                            for (int i = 0; i < @ViewBag.Venta.Articulos.Count; i++)
+                            for (int i = 0; i < venta.Articulos.Count; i++)
                             {
-                                decimal precioTemp = @ViewBag.Venta.Articulos[i].Precio;
-                                if (@ViewBag.Venta.OfertaRelampago)
+                                decimal precioTemp = venta.Articulos[i].Precio;
+                                if (venta.OfertaRelampago)
                                 {
                                     precioTemp = (precioTemp * 80) / 100;
                                 }
@@ -48,17 +55,22 @@
                             }
                         }
                         <tr>
-                            <td>@ViewBag.Venta.Id</td>
-                            <td>@ViewBag.Venta.Nombre</td>
-                            <td>@ViewBag.Venta.Estado</td>
-                            <td>@ViewBag.Venta.Fecha.ToString("dd/MM/yyyy")</td>
-                            <td>@ViewBag.Venta.Articulos.Count</td>
-                            <td>@(ViewBag.Venta.OfertaRelampago ? "Sí" : "No")</td>
+                            <td>@venta.Id</td>
+                            <td>@venta.Nombre</td>
+                            <td>@venta.Estado</td>
+                            <td>@venta.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td>@venta.Articulos.Count</td>
+                            @if (currentRole == "Administrador")
+                            {
+                                <td>@venta.Cliente?.Nombre</td>
+                            }
+                            <td>@(venta.OfertaRelampago ? "Sí" : "No")</td>
                             <td>$@precio</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <!-- Datos sobre los articulos asociados a la venta -->
             <div class="spaced">
                 <table class="table">
                     <thead>
@@ -69,12 +81,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for (int i = 0; i < @ViewBag.Venta.Articulos.Count; i++)
+                        @for (int i = 0; i < @venta.Articulos.Count; i++)
                         {
                             <tr>
-                                <td>@ViewBag.Venta.Articulos[i].Nombre</td>
-                                <td>@ViewBag.Venta.Articulos[i].Categoria</td>
-                                <td>$@ViewBag.Venta.Articulos[i].Precio</td>
+                                <td>@venta.Articulos[i].Nombre</td>
+                                <td>@venta.Articulos[i].Categoria</td>
+                                <td>$@venta.Articulos[i].Precio</td>
                             </tr>
                         }
                     </tbody>
@@ -82,27 +94,38 @@
             </div>
         }
 
+        <!-- Inputs para comprar o cerrar ventas -->
         <form method="post">
-            <input type="submit" value="Confirmar compra" class="btn btn-primary" />
+            <!-- Pasa el id de venta obtenido de la URL al metodo post -->
+            <input type="hidden" name="ventaId" value="@venta.Id" />
+            @if (currentRole == "Cliente")
+            {
+                <button type="submit" name="action" value="BuySale" class="btn btn-primary">Confirmar compra</button>
+            }
+            else
+            {
+                <button type="submit" name="action" value="CloseSale" class="btn btn-secondary">Cerrar venta</button>
+            }
         </form>
     </div>
 
+    <!-- Muestra mensajes de error -->
     @if (ViewBag.Mensaje != null)
     {
         <div class="widest spaced alert alert-danger">
             @ViewBag.Mensaje
         </div>
     }
-
+    <!-- Muestra mensajes de confirmación de procesos -->
     @if (ViewBag.Confirmacion != null)
     {
         <div class="widest spaced alert alert-info">
             @ViewBag.Confirmacion
         </div>
     }
-
+    <!-- Permite volver al menu anterior -->
     <div class="align-center widest frame action-container">
-        <p>Haga click aquí para volver a los detalles de la venta</p>
+        <p>Haga click aquí para volver a la vista de publicaciones</p>
         <!-- Botón con redirección a la página de Listar Publicaciones -->
         <a href="/Publications/ListPublications" class="btn btn-outline-secondary">Volver</a>
     </div>

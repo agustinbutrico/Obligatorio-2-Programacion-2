@@ -1,0 +1,144 @@
+﻿@{
+    ViewData["Title"] = "OfferDetails";
+}
+
+@{
+    string? currentRole = ViewContext.HttpContext.Session.GetString("UserRole");
+    var cliente = ViewBag.Cliente;
+    var subasta = ViewBag.Subasta;
+    bool hayOfertas = ViewBag.Subasta != null && ViewBag.Subasta.Ofertas != null && ViewBag.Subasta.Ofertas.Count > 0;
+}
+
+<!-- Muestra el contenido si el usuario está loggeado -->
+@if (currentRole != null)
+{
+    <div class="text-center">
+        <h1 class="display-4">Detalles oferta</h1>
+    </div>
+
+    <div class="widest spaced frame">
+        @if (ViewBag.Cliente != null && currentRole == "Cliente")
+        {
+            <p class="text-dark">Saldo disponible: $@cliente.Saldo</p>
+        }
+
+        @if (ViewBag.Subasta != null)
+        {
+            <!-- Datos sobre la subasta -->
+            <div class="spaced">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Articulos</th>
+                            @if (currentRole == "Administrador")
+                            {
+                                <th>Cliente</th>
+                            }
+                            <th>Ofertas</th>
+                            <th>Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            <!-- La ultima oferta realizada siempre es la más alta -->
+                            decimal precio = 0;
+                            if (hayOfertas)
+                            {
+                                precio = @subasta.Ofertas[@subasta.Ofertas.Count - 1].Monto;
+                            }
+                            <tr>
+                                <td>@subasta.Id</td>
+                                <td>@subasta.Nombre</td>
+                                <td>@subasta.Estado</td>
+                                <td>@subasta.Fecha.ToString("dd/MM/yyyy")</td>
+                                <td>@subasta.Articulos.Count</td>
+                                @if (currentRole == "Administrador")
+                                {
+                                    <td>@subasta.Cliente?.Nombre</td>
+                                }
+                                <td>@subasta.Ofertas.Count</td>
+                                <td>$@precio</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- Datos sobre ofertas realizadas por otros clientes-->
+            @if (hayOfertas)
+            {
+                <div class="spaced">
+                    <h2>Histórico</h2>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Fecha</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < subasta.Ofertas.Count; i++)
+                            {
+                                <tr>
+                                    <td>@subasta.Ofertas[i].Usuario.Nombre</td>
+                                    <td>@subasta.Ofertas[i].Fecha.ToString("dd/MM/yyyy")</td>
+                                    <td>$@subasta.Ofertas[i].Monto</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        }
+
+        <!-- Inputs para comprar o cerrar ventas -->
+        <form method="post">
+            <!-- Pasa el id de subasta obtenido de la URL al metodo post -->
+            <input type="hidden" name="subastaId" value="@subasta.Id" />
+            @if (subasta.Estado.ToUpper() == "ABIERTA" && currentRole == "Cliente")
+            {
+                <label>Monto</label>
+                <input type="number" name="monto" />
+                <button type="submit" name="action" value="OfferAuction" class="btn btn-primary">Ofertar</button>
+            }
+            else if (subasta.Estado.ToUpper() == "ABIERTA" && currentRole == "Administrador")
+            {
+                <button type="submit" name="action" value="CloseAuction" class="btn btn-secondary">Cerrar subasta</button>
+            }
+        </form>
+    </div>
+
+    <!-- Muestra mensajes de error -->
+    @if (ViewBag.Mensaje != null)
+    {
+        <div class="widest spaced alert alert-danger">
+            @ViewBag.Mensaje
+        </div>
+    }
+    <!-- Muestra mensajes de confirmación de procesos -->
+    @if (ViewBag.Confirmacion != null)
+    {
+        <div class="widest spaced alert alert-info">
+            @ViewBag.Confirmacion
+        </div>
+    }
+    <!-- Permite volver al menu anterior -->
+    <div class="align-center widest frame action-container">
+        <p>Haga click aquí para volver a la vista de publicaciones</p>
+        <!-- Botón con redirección a la página de Listar Publicaciones -->
+        <a href="/Publications/ListPublications" class="btn btn-outline-secondary">Volver</a>
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-4">Acceso restringido</h1>
+        <label>Ir a login</label>
+        <!-- Botón con redirección a la página de login -->
+        <a href="/Account/Login" class="btn btn-primary">Login</a>
+    </div>
+}
