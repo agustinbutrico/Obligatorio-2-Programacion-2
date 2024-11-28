@@ -7,8 +7,8 @@
     string? currentRole = ViewContext.HttpContext.Session.GetString("UserRole");
 }
 
-<!-- Muestra el contenido si el usuario está loggeado -->
-@if (currentRole != null)
+<!-- Muestra el contenido si el cliente está loggeado -->
+@if (currentRole == "CLIENTE")
 {
     <div class="text-center">
         <h1 class="display-4">Añadir fondos</h1>
