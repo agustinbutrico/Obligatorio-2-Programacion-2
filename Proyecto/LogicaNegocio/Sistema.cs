@@ -87,6 +87,44 @@ namespace LogicaNegocio
         }
         #endregion
         #region Publicacion
+        public List<Publicacion> ObtenerPublicaciones(bool esUnicamenteVenta, bool esUnicamenteSubasta)
+        {
+            bool hayVenta = false;
+            bool haySubasta = false;
+            List<Publicacion> publicaciones = new List<Publicacion>();  // Inicializamos la lista que contendrá las publicaciones
+            for (int i = 0; i < _publicaciones.Count; i++)
+            {
+                if ((esUnicamenteVenta && !esUnicamenteSubasta) || (!esUnicamenteVenta && !esUnicamenteSubasta))
+                {
+                    if (_publicaciones[i] is Venta venta)
+                    {
+                        hayVenta = true;
+                        publicaciones.Add(venta); // Se añade la venta a la lista publicaciones
+                    }
+                }
+                if ((esUnicamenteSubasta && !esUnicamenteVenta) || (!esUnicamenteVenta && !esUnicamenteSubasta))
+                {
+                    if (_publicaciones[i] is Subasta subasta)
+                    {
+                        haySubasta = true;
+                        publicaciones.Add(subasta); // Se añade la subasta a la lista publicaciones
+                    }
+                }
+            }
+            if (!hayVenta && !haySubasta)
+            {
+                throw new ArgumentException("No hay ningúna pubicación en el sistema");
+            }
+            if (!hayVenta && esUnicamenteVenta)
+            {
+                throw new ArgumentException("No hay ningúna venta en el sistema");
+            }
+            if (!haySubasta && esUnicamenteSubasta)
+            {
+                throw new ArgumentException("No hay ningúna subasta en el sistema");
+            }
+            return publicaciones;
+        }
         public Publicacion? ObtenerPublicacionPorId(int id, bool esUnicamenteVenta, bool esUnicamenteSubasta)
         {
             bool hayVenta = false;
