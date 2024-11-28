@@ -66,9 +66,9 @@
                                 <td>@venta.Administrador?.Nombre</td>
                             }
                             <td>
-                                @if (venta.Estado.ToUpper() != "ABIERTA" && venta.Estado.ToUpper() != "PENDIENTE")
+                                @if (venta.FechaFin != DateTime.MinValue)
                                 {
-                                    venta.FechaFin.ToString("dd/MM/yyyy");
+                                    @venta.FechaFin.ToString("dd/MM/yyyy");
                                 }
                             </td>
                             <td>@(venta.OfertaRelampago ? "Sí" : "No")</td>
@@ -138,9 +138,9 @@
                                 <td>@subasta.Administrador?.Nombre</td>
                             }
                             <td>
-                                @if (subasta.Estado.ToUpper() == "ABIERTA")
+                                @if (subasta.FechaFin != DateTime.MinValue)
                                 {
-                                    subasta.FechaFin.ToString("dd/MM/yyyy");
+                                    @subasta.FechaFin.ToString("dd/MM/yyyy")
                                 }
                             </td>
                             <td>@subasta.Ofertas.Count</td>
