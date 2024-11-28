@@ -13,7 +13,7 @@ namespace LogicaNegocio
     public class Sistema
     {
         #region Patron singleton
-        private static Sistema _instancia; // Instancia única
+        private static Sistema? _instancia; // Instancia única
         private static readonly object _bloqueo = new object(); // Para hilos seguros
 
         // Propiedad para acceder a la instancia única
