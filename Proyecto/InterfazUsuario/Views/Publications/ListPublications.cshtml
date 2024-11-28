@@ -5,6 +5,7 @@
 
 @{
     string? currentRole = ViewContext.HttpContext.Session.GetString("UserRole");
+    int? userId = ViewContext.HttpContext.Session.GetInt32("UserId");
 }
 
 <!-- Muestra el contenido si el usuario está loggeado -->
@@ -12,6 +13,12 @@
 {
     <!-- Define el modelo a usar -->
     @model InterfazUsuario.Models.ListPublicationsViewModel
+
+    <div class="wider spaced frame">
+        <p>Rol= @currentRole</p>
+        <p>Id usuario= @userId</p>
+        <p>TEST</p>
+    </div>
 
     <div class="text-center">
         <h1 class="display-4">Publicaciones</h1>
@@ -66,13 +73,11 @@
                             <td>
                                 @if (venta.Estado.ToUpper() == "ABIERTA" && currentRole == "Cliente")
                                 {
-                                    <a href="/Publications/Buy/@venta.Id" class="btn btn-primary">Comprar</a>
+                                    <a href="/Publications/SaleDetails/@venta.Id" class="btn btn-primary">Comprar</a>
                                 }
-                            </td>
-                            <td>
-                                @if (venta.Estado.ToUpper() == "ABIERTA" && currentRole == "Administrador")
+                                else if (venta.Estado.ToUpper() == "ABIERTA" && currentRole == "Administrador")
                                 {
-                                    <a href="/Publications/Close/@venta.Id" class="btn btn-primary">Cerrar</a>
+                                    <a href="/Publications/SaleDetails/@venta.Id" class="btn btn-primary">Administrar</a>
                                 }
                             </td>
                         </tr>
@@ -128,9 +133,13 @@
                             <td>@subasta.Ofertas.Count</td>
                             <td>$@precio</td>
                             <td>
-                                @if (subasta.Estado.ToUpper() == "ABIERTA")
+                                @if (subasta.Estado.ToUpper() == "ABIERTA" && currentRole == "Cliente")
                                 {
-                                    <a href="/Publications/ListOffers/@subasta.Id" class="btn btn-primary">Detalles</a>
+                                    <a href="/Publications/AuctionDetails/@subasta.Id" class="btn btn-primary">Ofertar</a>
+                                }
+                                else if (subasta.Estado.ToUpper() == "ABIERTA" && currentRole == "Administrador")
+                                {
+                                    <a href="/Publications/AuctionDetails/@subasta.Id" class="btn btn-primary">Administrar</a>
                                 }
                             </td>
                         </tr>
