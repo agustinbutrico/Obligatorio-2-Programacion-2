@@ -1,25 +1,21 @@
-﻿@{
-    ViewData["Title"] = "Buy";
+﻿
+@{
+    ViewData["Title"] = "CloseAuction";
 }
 
 @{
     string? currentRole = ViewContext.HttpContext.Session.GetString("UserRole");
 }
 
-<!-- Muestra el contenido si el usuario está loggeado -->
-@if (currentRole != null)
+<!-- Muestra el contenido si el usuario está loggeado como administrador -->
+@if (currentRole == "Administrador")
 {
     <div class="text-center">
-        <h1 class="display-4">Comprar</h1>
+        <h1 class="display-4">Cerrar</h1>
     </div>
 
     <div class="widest spaced frame">
-        @if (ViewBag.Cliente != null)
-        {
-            <p class="text-dark">Saldo disponible: $@ViewBag.Cliente.Saldo</p>
-        }
-        
-        @if (ViewBag.Venta != null)
+        @if (ViewBag.Subasta != null)
         {
             <div class="spaced">
                 <table class="table">
@@ -30,7 +26,8 @@
                             <th>Estado</th>
                             <th>Fecha</th>
                             <th>Articulos</th>
-                            <th>Oferta relampago</th>
+                            <th>Fecha fin</th>
+                            <th>Ofertas</th>
                             <th>Precio</th>
                         </tr>
                     </thead>
@@ -116,3 +113,4 @@ else
         <a href="/Account/Login" class="btn btn-primary">Login</a>
     </div>
 }
+

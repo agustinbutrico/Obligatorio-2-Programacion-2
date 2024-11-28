@@ -20,7 +20,7 @@ namespace InterfazUsuario.Controllers
                 // Almacena en una variable el usuario activo
                 Usuario? cliente = sistema.ObtenerUsuarioPorId(idUser, true, false);
                 // Casteo explícito de Cliente
-                var clienteActivo = (Cliente?)cliente;
+                Cliente? clienteActivo = (Cliente?)cliente;
 
                 // Crear el modelo con ambas listas
                 var model = new FundsViewModel
@@ -60,7 +60,7 @@ namespace InterfazUsuario.Controllers
                     // Almacena en una variable el usuario activo
                     Usuario? cliente = sistema.ObtenerUsuarioPorId(idUser, true, false);
                     // Casteo explícito de Cliente
-                    var clienteActivo = (Cliente?)cliente;
+                    Cliente? clienteActivo = (Cliente?)cliente;
 
                     if (clienteActivo != null)
                     {
