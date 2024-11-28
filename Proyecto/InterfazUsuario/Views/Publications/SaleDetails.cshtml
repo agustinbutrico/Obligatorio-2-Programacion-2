@@ -4,8 +4,8 @@
 
 @{
     string? currentRole = ViewContext.HttpContext.Session.GetString("UserRole");
-    var venta = ViewBag.Venta;
     var cliente = ViewBag.Cliente;
+    var venta = ViewBag.Venta;
 }
 
 <!-- Muestra el contenido si el usuario está loggeado -->
@@ -33,6 +33,10 @@
                             <th>Estado</th>
                             <th>Fecha</th>
                             <th>Articulos</th>
+                            @if (currentRole == "Administrador")
+                            {
+                                <th>Cliente</th>
+                            }
                             <th>Oferta relampago</th>
                             <th>Precio</th>
                         </tr>
@@ -54,11 +58,12 @@
                             <td>@venta.Id</td>
                             <td>@venta.Nombre</td>
                             <td>@venta.Estado</td>
-                            @if (@venta.Fecha != null)
-                            {
-                                <td>@venta.Fecha.ToString("dd/MM/yyyy")</td>
-                            }
+                            <td>@venta.Fecha.ToString("dd/MM/yyyy")</td>
                             <td>@venta.Articulos.Count</td>
+                            @if (currentRole == "Administrador")
+                            {
+                                <td>@venta.Cliente?.Nombre</td>
+                            }
                             <td>@(venta.OfertaRelampago ? "Sí" : "No")</td>
                             <td>$@precio</td>
                         </tr>
@@ -91,6 +96,8 @@
 
         <!-- Inputs para comprar o cerrar ventas -->
         <form method="post">
+            <!-- Pasa el id de venta obtenido de la URL al metodo post -->
+            <input type="hidden" name="ventaId" value="@venta.Id" />
             @if (currentRole == "Cliente")
             {
                 <button type="submit" name="action" value="BuySale" class="btn btn-primary">Confirmar compra</button>
