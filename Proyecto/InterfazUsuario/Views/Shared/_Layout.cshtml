@@ -25,11 +25,14 @@
                     </button>
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
-                            @if (currentRole != null)
+                            @if (currentRole == "CLIENTE")
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Wallet" asp-action="Funds">Billetera</a>
                                 </li>
+                            }
+                            else if (currentRole != null)
+                            {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Publications" asp-action="ListPublications">Publicaciones</a>
                                 </li>
