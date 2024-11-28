@@ -393,7 +393,10 @@ namespace LogicaNegocio
         }
         #endregion
         #endregion
-
+        
+        /// <summary>
+        /// Las funciones de transacción se encargan de cobrar y hacer la lógica de compra
+        /// </summary>
         #region Transacciones
         public void CompraVenta(Cliente? cliente, Venta? venta)
         {
