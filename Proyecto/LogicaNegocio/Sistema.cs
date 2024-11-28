@@ -282,21 +282,6 @@ namespace LogicaNegocio
         }
         #endregion
         #region Publicacion
-        public void AltaPublicacion(string nombre, string estado, DateTime fecha, List<Articulo> articulos, Cliente? cliente, DateTime fechaFin)
-        {
-            Publicacion nuevaPublicacion = new Publicacion(nombre, estado, fecha, articulos, cliente, fechaFin);
-            // Validación de la relacion entre los datos ingresados
-            nuevaPublicacion.Validar();
-            // Si los datos son validos entonces se registra la Publicación
-            if (!_publicaciones.Contains(nuevaPublicacion))
-            {
-                _publicaciones.Add(nuevaPublicacion);
-            }
-            else
-            {
-                throw new ArgumentException("Ya existe una publicacion registrada con el nombre proporcionado");
-            }
-        }
         public void AltaVenta(string nombre, string estado, DateTime fecha, List<Articulo> articulos, Cliente? cliente, DateTime fechaFin, bool ofertaRelampago)
         {
             Venta nuevaVenta = new Venta(nombre, estado, fecha, articulos, cliente, fechaFin, ofertaRelampago);
@@ -329,21 +314,6 @@ namespace LogicaNegocio
         }
         #endregion
         #region Usuario
-        public void AltaUsuario(string nombre, string apellido, string email, string contrasenia)
-        {
-            Usuario nuevoUsuario = new Usuario(nombre, apellido, email, contrasenia);
-            // Validación de la relacion entre los datos ingresados
-            nuevoUsuario.Validar();
-            // Si los datos son validos entonces se registra el Usuario
-            if (!_usuarios.Contains(nuevoUsuario))
-            {
-                _usuarios.Add(nuevoUsuario);
-            }
-            else
-            {
-                throw new ArgumentException("Ya existe un usuario registrado con el nombre y apellido proporcionados");
-            }
-        }
         public void AltaCliente(string nombre, string apellido, string email, string contrasenia, decimal saldo)
         {
             Cliente nuevoCliente = new Cliente(nombre, apellido, email, contrasenia, saldo);
