@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace LogicaNegocio
 {
+    #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     public class Subasta : Publicacion
+    #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
         #region Atributos de la clase
         private Administrador? _administrador; // Inicializado con una instancia por defecto

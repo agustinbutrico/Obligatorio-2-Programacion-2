@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace LogicaNegocio
 {
+    #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     public class Venta : Publicacion
+    #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
         #region Atributos de la clase
         private bool _ofertaRelampago = false; // Inicializado en falso

@@ -8,7 +8,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LogicaNegocio
 {
+    #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     public class Oferta : IValidate
+    #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
         #region Atributos de la clase
         private int _id;
