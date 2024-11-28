@@ -107,7 +107,7 @@ namespace InterfazUsuario.Controllers
                         Usuario? cliente = sistema.ObtenerUsuarioPorId(idUser, true, false);
                         // Casteo explícito de Cliente
                         Cliente? clienteActivo = (Cliente?)cliente;
-                        
+
                         if (clienteActivo != null)
                         {
                             // Almacena el cliente en una variable
@@ -141,9 +141,41 @@ namespace InterfazUsuario.Controllers
                                 }
                             }
                         }
-                        else if (currentRole == "Administrador" && action == "CloseSale")
+                    }
+                    // Logica para el cierre de Publicaciones de tipo Venta
+                    else if (currentRole == "Administrador" && action == "CloseSale")
+                    {
+                        // Obtiene el id del Usuario con el dato almacenado al realizar el login
+                        int idUser = HttpContext.Session.GetInt32("UserId") ?? 0;
+                        // Almacena en una variable el usuario activo
+                        Usuario? administrador = sistema.ObtenerUsuarioPorId(idUser, false, true);
+                        // Casteo explícito de Administrador
+                        Administrador? administradorActivo = (Administrador?)administrador;
+
+                        if (administradorActivo != null)
                         {
-                            // Logica para el cierre de Publicaciones de tipo Venta
+                            // Almacena el administrador en una variable
+                            ViewBag.Administrador = administradorActivo;
+
+                            // Manejo de errores
+                            if (ventaActiva?.Estado.ToUpper() != "PENDIENTE")
+                            {
+                                ViewBag.Mensaje = "La venta no se encuentra pendiente de autorización";
+                            }
+                            else if (ventaActiva.Cliente == null)
+                            {
+                                ViewBag.Mensaje = "La venta no tiene un comprador";
+                            }
+                            else
+                            {
+                                // Modifica los datos de la subasta y registra el Administrador que cerro la subasta
+                                ventaActiva.Estado = "CERRADA";
+                                ventaActiva.Administrador = administradorActivo;
+                                ventaActiva.FechaFin = DateTime.Now;
+
+                                // Mensaje de Confirmación
+                                ViewBag.Confirmacion = "La venta fue cerrada correctamente";
+                            }
                         }
                     }
                 }

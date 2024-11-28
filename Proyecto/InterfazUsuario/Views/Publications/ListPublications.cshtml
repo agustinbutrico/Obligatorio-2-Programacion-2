@@ -66,7 +66,7 @@
                                 <td>@venta.Administrador?.Nombre</td>
                             }
                             <td>
-                                @if (venta.Estado.ToUpper() == "ABIERTA")
+                                @if (venta.Estado.ToUpper() != "ABIERTA" && venta.Estado.ToUpper() != "PENDIENTE")
                                 {
                                     venta.FechaFin.ToString("dd/MM/yyyy");
                                 }
@@ -78,7 +78,7 @@
                                 {
                                     <a href="/Publications/SaleDetails/@venta.Id" class="btn btn-primary">Comprar</a>
                                 }
-                                else if (venta.Estado.ToUpper() == "ABIERTA" && currentRole == "Administrador")
+                                else if ((venta.Estado.ToUpper() == "ABIERTA" || venta.Estado.ToUpper() == "PENDIENTE") && currentRole == "Administrador")
                                 {
                                     <a href="/Publications/SaleDetails/@venta.Id" class="btn btn-primary">Administrar</a>
                                 }
