@@ -81,6 +81,12 @@
             </table>
         </div>
     }
+    else if (Model.Ventas == null)
+    {
+        <div class="widest spaced frame">
+            <h2>No hay ventas</h2>
+        </div>
+    }
 
     @if (Model.Subastas != null && Model.Subastas.Any())
     {
@@ -151,6 +157,12 @@
                     }
                 </tbody>
             </table>
+        </div>
+    }
+    else if (Model.Subastas == null)
+    {
+        <div class="widest spaced frame">
+            <h2>No hay subastas</h2>
         </div>
     }
 }
